@@ -6,7 +6,12 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "eslint --ext .ts,.tsx"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "pretty-quick --staged && npm run lint"
+    }
   },
   "dependencies": {
     "next": "11.0.1",
@@ -14,12 +19,23 @@
     "react-dom": "17.0.2"
   },
   "devDependencies": {
+    "@fullhuman/postcss-purgecss": "^4.0.3",
     "@types/node": "^16.4.10",
     "@types/react": "^17.0.15",
-    "eslint": "7.32.0",
+    "@typescript-eslint/eslint-plugin": "^4.29.0",
+    "@typescript-eslint/parser": "^4.29.0",
+    "autoprefixer": "^9",
+    "eslint": "^7.32.0",
     "eslint-config-next": "11.0.1",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prettier": "^3.4.0",
+    "eslint-plugin-react": "^7.24.0",
+    "husky": "^7.0.1",
+    "postcss": "^7",
     "postcss-preset-env": "^6.7.0",
-    "tailwindcss": "^2.2.7",
+    "prettier": "^2.3.2",
+    "pretty-quick": "^3.1.1",
+    "tailwindcss": "npm:@tailwindcss/postcss7-compat",
     "typescript": "^4.3.5"
   }
 }
