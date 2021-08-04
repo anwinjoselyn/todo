@@ -70,6 +70,12 @@ const useAuthProvider = () => {
     return auth.signOut().then(() => setUser(false));
   };
 
+  const sendPasswordResetEmail = (email: string) => {
+    return auth.sendPasswordResetEmail(email).then((response) => {
+      return response;
+    });
+  };
+
   useEffect(() => {
     const unsub = auth.onAuthStateChanged(handleAuthStateChanged);
 
@@ -92,6 +98,7 @@ const useAuthProvider = () => {
     signUp,
     signIn,
     signOut,
+    sendPasswordResetEmail,
   };
 };
 
