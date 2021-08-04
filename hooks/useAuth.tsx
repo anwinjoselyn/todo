@@ -91,7 +91,7 @@ const useAuthProvider = () => {
         .onSnapshot((doc) => setUser(doc.data()));
       return () => unsubscribe();
     }
-  }, [user]);
+  }, []);
 
   return {
     user,

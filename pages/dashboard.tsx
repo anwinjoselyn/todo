@@ -2,6 +2,7 @@ import useRequireAuth from '../hooks/useRequireAuth';
 
 const DashBoardPage: React.FC = () => {
   const auth = useRequireAuth();
+  console.log('auth', auth);
   if (!auth.user) return null;
   return (
     <div className="min-h-screen flex bg-gray-200">
