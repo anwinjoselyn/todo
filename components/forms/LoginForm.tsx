@@ -1,4 +1,7 @@
+import { useRouter } from 'next/dist/client/router';
 import { useForm } from 'react-hook-form';
+import { useAuth } from '../../hooks/useAuth';
+
 interface LoginData {
   email: string;
   password: string;
@@ -11,9 +14,15 @@ const LoginForm: React.FC = () => {
     formState: { errors },
   } = useForm();
 
+  const auth = useAuth();
+  const router = useRouter();
+
   const onSubmit = (data: LoginData) => {
-    console.log(data);
+    return auth.signIn(data).then(() => {
+      router.push('/dashboard');
+    });
   };
+  
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className="rounded-md">

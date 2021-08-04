@@ -1,5 +1,6 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
+import { db, auth } from '../../config/firebase';
 
 interface SignUpData {
   name: string;
@@ -15,8 +16,34 @@ const SignUpForm = () => {
     formState: { errors },
   } = useForm();
 
+  const createUser = (user) => {
+    return db
+      .collection('users')
+      .doc(user.uid)
+      .set(user)
+      .then(() => {
+        console.log('Success');
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const signUp = ({ name, email, password }) => {
+    return auth
+      .createUserWithEmailAndPassword(email, password)
+      .then((response) => {
+        return createUser({ uid: response.user.uid, email, name });
+      })
+      .catch((error) => {
+        return { error };
+      });
+  };
+
   const onSubmit = (data: SignUpData) => {
-    console.log(data);
+    return signUp(data).then((user) => {
+      console.log(user);
+    });
   };
 
   return (
