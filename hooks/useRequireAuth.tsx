@@ -10,7 +10,7 @@ const useRequireAuth = () => {
       router.push('/login');
     }
   }, [auth, router]);
-``
+
   return auth;
 };
 
