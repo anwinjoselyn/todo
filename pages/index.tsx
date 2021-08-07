@@ -1,12 +1,36 @@
+import useSWR from 'swr';
+
+import fetcher from '../libs/fetcher';
+import useRequireAuth from '../hooks/useRequireAuth';
+
+import Container from '../components/Container';
+import ToDo from '../components/ToDo';
+import LoginForm from '../components/forms/LoginForm';
+
 export default function Home() {
+  const auth = useRequireAuth();
+
+  if (!auth.user) {
+    return (
+      <Container>
+        <LoginForm />
+      </Container>
+    );
+  }
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const { data } = useSWR(
+    auth.user ? `/api/todos/${auth.user.uId}` : null,
+    fetcher
+  );
+  if (!data) {
+    return <Container>Loading...</Container>;
+  }
+
   return (
-    <div className="md:flex bg-white rounded-lg p-24 justify-center">
-      <div className="text-center md:text-left">
-        <h2 className="text-lg">Anwin Joselyn</h2>
-        <div className="text-purple-500">Frontend developer</div>
-        <div className="text-gray-600">Twitter: @anwinj</div>
-        <div className="text-gray-600">www.nowebsiteatall.com</div>
-      </div>
-    </div>
+    <Container>
+      {data.map((todo: any) => (
+        <ToDo key={todo.id} {...todo} />
+      ))}
+    </Container>
   );
 }
