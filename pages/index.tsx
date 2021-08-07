@@ -10,6 +10,11 @@ import LoginForm from '../components/forms/LoginForm';
 export default function Home() {
   const auth = useRequireAuth();
 
+  const { data } = useSWR(
+    auth && auth.user ? `/api/todos/${auth.user.uId}` : null,
+    fetcher
+  );
+console.log('data', data)
   if (!auth.user) {
     return (
       <Container>
@@ -17,20 +22,16 @@ export default function Home() {
       </Container>
     );
   }
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  const { data } = useSWR(
-    auth.user ? `/api/todos/${auth.user.uId}` : null,
-    fetcher
-  );
-  if (!data) {
+
+  if (!data || data.error) {
     return <Container>Loading...</Container>;
   }
 
   return (
     <Container>
-      {data.map((todo: any) => (
+      {data && !data.error ? data.map((todo: any) => (
         <ToDo key={todo.id} {...todo} />
-      ))}
+      )) : "No To Dos available"}
     </Container>
   );
 }
