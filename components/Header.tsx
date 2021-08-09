@@ -7,7 +7,7 @@ export default function Header() {
   return (
     <div className="py-5 bg-soft-red flex flex-row justify-between content-center">
       <Link href="/" passHref>
-        <h1 className="hover:text-gray-200 ml-7 font-bold mb-1 cursor-pointer">
+        <h1 className="primary-text-color hover:text-gray-200 ml-7 font-bold mb-1 cursor-pointer">
           To Dos
         </h1>
       </Link>
