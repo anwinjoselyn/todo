@@ -11,7 +11,7 @@ const { Provider } = authContext;
 // Provider hook that creates an auth object and handles it's state
 const useAuthProvider = () => {
   const [user, setUser] = useState(null);
-  const createUser = (user) => {
+  const createUser = (user: any) => {
     return db
       .collection('users')
       .doc(user.uid)
@@ -24,7 +24,7 @@ const useAuthProvider = () => {
         return { error };
       });
   };
-  const signUp = ({ name, email, password }) => {
+  const signUp = ({ name, email, password }: any) => {
     return auth
       .createUserWithEmailAndPassword(email, password)
       .then((response) => {

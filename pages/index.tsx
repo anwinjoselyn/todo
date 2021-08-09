@@ -9,12 +9,10 @@ import LoginForm from '../components/forms/LoginForm';
 
 export default function Home() {
   const auth = useRequireAuth();
+  // console.log('auth', auth)
+  const { data } = useSWR(`/api/todos`, fetcher);
+  const users = useSWR(`/api/users`, fetcher);
 
-  const { data } = useSWR(
-    auth && auth.user ? `/api/todos/${auth.user.uId}` : null,
-    fetcher
-  );
-console.log('data', data)
   if (!auth.user) {
     return (
       <Container>
@@ -27,11 +25,23 @@ console.log('data', data)
     return <Container>Loading...</Container>;
   }
 
+  // const user = users.data.users.find((u: any) => u.uid === auth.user.uid)
+
+  const { todos } = data;
+
   return (
     <Container>
-      {data && !data.error ? data.map((todo: any) => (
-        <ToDo key={todo.id} {...todo} />
-      )) : "No To Dos available"}
+      {todos && !data.error
+        ? todos.map((todo: any) => (
+            <ToDo
+              key={todo.id}
+              {...todo}
+              users={
+                users && users.data && users.data.users ? users.data.users : []
+              }
+            />
+          ))
+        : 'No To Dos available'}
     </Container>
   );
 }
