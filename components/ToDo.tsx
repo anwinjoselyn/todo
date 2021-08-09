@@ -46,6 +46,7 @@ export default function ToDo({
       state.isLoading = false;
       setState({ ...state });
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   console.log('state', state);
   // const author = users ? users.find((u: any) => u.uid === authorId): "---";
