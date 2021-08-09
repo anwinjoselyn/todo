@@ -11,7 +11,7 @@ export default function Home() {
   const auth = useRequireAuth();
   // console.log('auth', auth)
   const { data } = useSWR(`/api/todos`, fetcher);
-  const users = useSWR(`/api/users`, fetcher);
+  const { data: users } = useSWR(`/api/users`, fetcher);
 
   if (!auth.user) {
     return (
@@ -25,8 +25,6 @@ export default function Home() {
     return <Container>Loading...</Container>;
   }
 
-  // const user = users.data.users.find((u: any) => u.uid === auth.user.uid)
-
   const { todos } = data;
 
   return (
@@ -37,7 +35,7 @@ export default function Home() {
               key={todo.id}
               {...todo}
               users={
-                users && users.data && users.data.users ? users.data.users : []
+                users && users.users ? users.users : []
               }
             />
           ))
