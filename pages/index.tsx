@@ -1,3 +1,4 @@
+import Head from 'next/head';
 import useSWR from 'swr';
 
 import fetcher from '../libs/fetcher';
@@ -29,17 +30,27 @@ export default function Home() {
 
   return (
     <Container>
-      {todos && !data.error
-        ? todos.map((todo: any) => (
-            <ToDo
-              key={todo.id}
-              {...todo}
-              users={
-                users && users.users ? users.users : []
-              }
-            />
-          ))
-        : 'No To Dos available'}
+      <Head>
+        <title>To Do App with Next.js, Firebase {`&`} Tailwind CSS</title>
+        <meta
+          property="og:title"
+          content={`To Do App with Next.js, Firebase & Tailwind CSS`}
+          key="title"
+        />
+        <link
+          href="https://fonts.googleapis.com/icon?family=Material+Icons"
+          rel="stylesheet"
+        ></link>
+      </Head>
+      {todos &&
+        !data.error &&
+        todos.map((todo: any) => (
+          <ToDo
+            key={todo.id}
+            {...todo}
+            users={users && users.users ? users.users : []}
+          />
+        ))}
     </Container>
   );
 }
