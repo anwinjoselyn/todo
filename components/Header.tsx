@@ -5,24 +5,27 @@ export default function Header() {
   const auth = useRequireAuth();
 
   return (
-    <div className="py-3 bg-orange flex flex-row justify-between content-center items-center">
+    <div className="py-3 bg-primary-text-color flex flex-row justify-between content-center items-center h-14">
       <Link href="/" passHref>
-        <h1 className="text-primary-text-color hover:text-secondary-text-color ml-7 font-bold mb-1">
-          To Do App
+        <h1 className="text-bg-other hover:text-muted-text-color ml-7 mb-1 text-sm">
+          Manage Tasks, Notes, Ideas, Schedules, and general scribbles
         </h1>
       </Link>
       <div className="flex items-center">
-        <Link href="/dashboard" passHref>
-          <span className="hover:text-secondary-text-color mr-7 self-center cursor-pointer">
+        {/* <Link href="/dashboard" passHref>
+          <span className="text-bg-light hover:text-secondary-text-color mr-7 self-center cursor-pointer">
             Dashboard
           </span>
-        </Link>
+        </Link> */}
         {auth.user ? (
+          <>
+          <span className="mr-3 text-bg-other">{auth.user.name}{`'`}s Workspace</span>
           <Link href="/profile" passHref>
-            <span className="material-icons hover:text-secondary-text-color text-3xl lg:text-4xl mr-7 self-center cursor-pointer">
+            <span className="material-icons text-bg-light hover:text-secondary-text-color mr-7 self-center cursor-pointer">
               account_circle
             </span>
           </Link>
+          </>
         ) : null}
       </div>
     </div>

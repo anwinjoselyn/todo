@@ -3,8 +3,8 @@ import Sidebar from './Sidebar';
 
 export default function Container({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex">
-      <div className="w-1/6  h-screen">
+    <div className="flex bg-bg-light">
+      <div className="w-1/6">
         <Sidebar />
       </div>
       <div className="w-5/6 ...">
