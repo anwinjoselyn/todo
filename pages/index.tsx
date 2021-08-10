@@ -1,6 +1,6 @@
 import { todoTypes } from '../utils/defaultValues';
 
-export default function Home({tasks, people}: any) {
+export default function Home({tasks}: any) {
 
   const summary = (type: any) => {
     let summaryObj: any = {
