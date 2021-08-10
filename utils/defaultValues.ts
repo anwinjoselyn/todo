@@ -55,13 +55,21 @@ export const todoTypes: any = [
     description: '',
   },
   {
-    id: 11,
+    id: 12,
     title: 'To Learn',
     description: '',
   },
 ];
 
 export const sidebarValues: any = [
+  {
+    key: 6,
+    title: 'Overview',
+    description: 'All To Dos',
+    route: '/',
+    icon: 'panorama_fish_eye',
+    children: [],
+  },
   {
     key: 1,
     title: 'Inbox',

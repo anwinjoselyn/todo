@@ -5,7 +5,7 @@ export default function Header() {
   const auth = useRequireAuth();
 
   return (
-    <div className="py-3 bg-primary-text-color flex flex-row justify-between content-center items-center h-14">
+    <div className="py-3 bg-primary-text-color flex flex-row justify-between content-center items-center h-14 sticky top-0">
       <Link href="/" passHref>
         <h1 className="text-bg-other hover:text-muted-text-color ml-7 mb-1 text-sm">
           Manage Tasks, Notes, Ideas, Schedules, and general scribbles
