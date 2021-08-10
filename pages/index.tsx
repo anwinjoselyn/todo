@@ -1,44 +1,16 @@
-import useSWR from 'swr';
-
-import fetcher from '../libs/fetcher';
-import useRequireAuth from '../hooks/useRequireAuth';
-
-import Container from '../components/Container';
-// import ToDo from '../components/ToDo';
-import LoginForm from '../components/forms/LoginForm';
-
 import { todoTypes } from '../utils/defaultValues';
 
-export default function Home() {
-  const auth = useRequireAuth();
-  // console.log('auth', auth)
-  const { data } = useSWR(`/api/todos`, fetcher);
-  const { data: users } = useSWR(`/api/users`, fetcher);
-
-  if (!auth.user) {
-    return (
-      <Container>
-        <LoginForm />
-      </Container>
-    );
-  }
-
-  if (!data || data.error) {
-    return <Container>Loading...</Container>;
-  }
-
-  const { todos } = data;
+export default function Home({tasks, people}: any) {
 
   const summary = (type: any) => {
-    console.log('type', type);
     let summaryObj: any = {
       total: 0,
       completed: 0,
     };
-    const todosOfSameType: any = todos.filter(
+    const todosOfSameType: any = tasks.filter(
       (todo: any) => todo.type === type.title
     );
-    console.log('todosOfSameType', todosOfSameType)
+
     if (todosOfSameType.length > 0) {
       todosOfSameType.forEach((td: any) => {
         summaryObj.total += 1;
@@ -76,7 +48,7 @@ export default function Home() {
   return (
     <div className="p-6">
       <h1 className="text-center my-7 text-3xl">Overview of Task Types</h1>
-      {todos && !data.error && renderTypes()}
+      {tasks && renderTypes()}
       {/* {todos &&
         !data.error &&
         todos.map((todo: any) => (
