@@ -9,7 +9,7 @@ export default function Container({ children }: { children: React.ReactNode }) {
       </div>
       <div className="w-5/6 ...">
         <Header />
-        {children}
+        <div className="p-3">{children}</div>
       </div>
     </div>
   );
