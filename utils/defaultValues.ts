@@ -59,6 +59,11 @@ export const todoTypes: any = [
     title: 'To Learn',
     description: '',
   },
+  {
+    id: 13,
+    title: 'How Tos',
+    description: '',
+  },
 ];
 
 export const sidebarValues: any = [

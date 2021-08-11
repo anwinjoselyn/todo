@@ -1,7 +1,7 @@
 import Spinner from '../../icons/Spinner';
 
 interface ButtonProps {
-  title?: string;
+  title?: any | React.ReactNode;
   isLoading?: boolean;
 }
 const Button = ({
