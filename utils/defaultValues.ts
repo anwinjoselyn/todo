@@ -67,7 +67,7 @@ export const sidebarValues: any = [
     title: 'Overview',
     description: 'All To Dos',
     route: '/',
-    icon: 'panorama_fish_eye',
+    icon: 'preview',
     children: [],
   },
   {

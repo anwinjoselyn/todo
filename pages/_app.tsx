@@ -45,7 +45,11 @@ export default function MyApp({ Component, pageProps }: AppProps): any {
             rel="stylesheet"
           ></link>
         </Head>
-        <Component {...pageProps} tasks={data && data.todos ? data.todos : []} people={users} />
+        <Component
+          {...pageProps}
+          tasks={data && data.todos ? data.todos : []}
+          people={users && users.users ? users.users : []}
+        />
       </Container>
     </AuthProvider>
   );

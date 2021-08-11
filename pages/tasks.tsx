@@ -17,7 +17,14 @@ const Tasks = ({ tasks, people }: any) => {
             <tr key={task.id}>
               <td className="border border-green-600">{task.title}</td>
               <td className="border border-green-600">{task.type}</td>
-              <td className="border border-green-600">{task.assignedTo}</td>
+              <td className="border border-green-600">
+                {task.assignedTo &&
+                people && people.length > 0 &&
+                people.find((person: any) => person.uid === task.assignedTo)
+                  ? people.find((person: any) => person.uid === task.assignedTo)
+                      .name
+                  : '---'}
+              </td>
               <td className="border border-green-600">{task.body}</td>
               <td className="border border-green-600">{task.dueDate}</td>
               <td className="border border-green-600">{task.lastUpdatedAt}</td>
