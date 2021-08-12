@@ -1,5 +1,7 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { CustomButton, SelectPanel, Drawer } from '../components';
+import AddNew from '../components/AddNew';
+import { todoFormData } from '../utils/defaultValues';
 
 const Tasks = ({ tasks, people }: any) => {
   const [state, setState] = useState<any>({
@@ -11,6 +13,16 @@ const Tasks = ({ tasks, people }: any) => {
     ],
     selectedIndex: 0,
     show: false,
+  });
+
+  useEffect(() => {
+    if (people) {
+      if (Object.keys(todoFormData).indexOf('assignedTo') > -1) {
+        todoFormData['assignedTo'].options = people.map((person: any) => {
+          return { key: person.uid, value: person.name };
+        });
+      }
+    }
   });
 
   const onSelect = (index: number) => {
@@ -76,7 +88,7 @@ const Tasks = ({ tasks, people }: any) => {
           width="w40"
           closeIcon={<span className="material-icons">cancel</span>}
         >
-          Data
+          <AddNew type="new" formData={todoFormData} />
         </Drawer>
       )}
     </div>
