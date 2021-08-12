@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Input = ({ field, props, error, innerRef, fieldKey }: any) => {
+const Input = ({ field, props, error, innerRef, fieldKey, onChange }: any) => {
   return (
     <div className="my-3" key={fieldKey}>
       <label className="w-full text-secondary-text-color text-sm" htmlFor={field.key}>
@@ -16,6 +16,7 @@ const Input = ({ field, props, error, innerRef, fieldKey }: any) => {
         autoComplete="off"
         ref={innerRef}
         {...props}
+        onChange={onChange}
       />
       <p className={`${error ? '' : 'invisible'}`}>{error && error}</p>
     </div>

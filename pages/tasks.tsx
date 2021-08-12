@@ -22,11 +22,6 @@ const Tasks = ({ tasks, people }: any) => {
           return { key: person.uid, value: person.name };
         });
       }
-      if (Object.keys(todoFormData).indexOf('type') > -1) {
-        todoFormData['type'].options = todoFormData['type'].options.map((typ: any) => {
-          return { key: typ.key, value: typ.title };
-        });
-      }
     }
   });
 
@@ -36,7 +31,7 @@ const Tasks = ({ tasks, people }: any) => {
     state.selectedIndex = index;
     setState({ ...state });
   };
-
+  console.log('todoFormData', todoFormData);
   return (
     <div className="p-5">
       <div className="flex justify-between mb-5">

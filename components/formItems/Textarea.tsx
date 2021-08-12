@@ -1,4 +1,4 @@
-const Textarea = ({ field, props, error, fieldKey, innerRef }: any) => {
+const Textarea = ({ field, props, error, fieldKey, innerRef, onChange }: any) => {
   return (
     <div className="my-3" key={fieldKey}>
       <label
@@ -17,6 +17,7 @@ const Textarea = ({ field, props, error, fieldKey, innerRef }: any) => {
         autoComplete="off"
         ref={innerRef}
         rows={field.rows}
+        onChange={onChange}
         {...props}
       />
       <p className={`${error ? '' : 'invisible'}`}>{error && error}</p>

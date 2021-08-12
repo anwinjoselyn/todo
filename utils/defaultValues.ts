@@ -172,7 +172,7 @@ export const sidebarValues: any = [
   },
 ];
 
-export const todoFormData: any = {
+export const todoFormData: { [key: string]: any } = {
   title: {
     key: 'title',
     label: 'Title',
@@ -188,7 +188,9 @@ export const todoFormData: any = {
     type: 'select',
     required: true,
     placeholder: 'Select a Type',
-    options: todoTypes,
+    options: todoTypes.map((typ: any) => {
+      return { key: typ.key, value: typ.title };
+    }),
   },
   assignedTo: {
     key: 'assignedTo',
@@ -218,12 +220,12 @@ export const todoFormData: any = {
   isCompleted: {
     key: 'isCompleted',
     label: 'Mark Complete?',
-    value: '',
+    value: null,
     type: 'radio',
     required: false,
     options: [
-      { title: 'YES', value: 'yes' },
-      { title: 'NO', value: 'no' },
+      { title: 'YES', value: true },
+      { title: 'NO', value: false },
     ],
   },
 };

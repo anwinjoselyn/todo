@@ -1,47 +1,76 @@
-import { useEffect } from 'react';
-import { useForm } from 'react-hook-form';
+/* eslint-disable react-hooks/exhaustive-deps */
+// import { useEffect } from 'react';
+// import { useForm } from 'react-hook-form';
+import { useState } from 'react';
 import { Input, Textarea, Select, Radio } from '.';
 import CustomButton from './elements/Button/CustomButton';
 
 const AddNew = ({ type, formData }: any) => {
-  const {
-    handleSubmit,
-    register,
-    formState: { errors },
-    setValue,
-  } = useForm({
-    shouldUnregister: false,
-    mode: 'onBlur',
-  });
-  console.log('formData', Object.keys(formData));
-  useEffect(() => {
-    Object.keys(formData).forEach((key: any) => {
-      setValue(formData[key].key, formData[key].value);
-    });
-  });
+  const [state, setState] = useState<{ [key: string]: any }>({ formData });
+  // const {
+  //   handleSubmit,
+  //   register,
+  //   formState: { errors },
+  //   setValue,
+  //   getValues,
+  // } = useForm({
+  //   shouldUnregister: false,
+  //   mode: 'onBlur',
+  // });
+  console.log('formData', formData);
+  // useEffect(() => {
+  //   Object.keys(formData).forEach((key: any) => {
+  //     setValue(formData[key].key, formData[key].value);
+  //   });
+  // }, []);
 
-  const onSubmit = (data: any) => {
-    console.log('data', data);
+  // useEffect(() => {
+  //   Object.keys(formData).forEach((key: any) => {
+  //   register(formData[key].key, {
+  //     validate: (value) => 'This is required.',
+  //   });
+  // })
+  // }, [register]);
+
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    state.formData[e.target.name].value = e.target.value;
+    setState({ ...state });
   };
-  console.log('errors', errors);
+
+  const onChangeRadio = (e: React.ChangeEvent<HTMLInputElement>) => {
+    console.log('e.target.checked', e.target.checked)
+    state.formData[e.target.name].value = !state.formData[e.target.name].value;
+    setState({ ...state });
+  };
+
+  const onSubmit = () => {
+    // const data = getValues();
+    // console.log('data', data);
+  };
+  console.log('state', state);
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      {Object.keys(formData).map((key: any) => {
-        if (formData[key].type === 'text' || formData[key].type === 'number') {
+    <form onSubmit={onSubmit}>
+      {Object.keys(state.formData).map((key: any) => {
+        if (
+          formData[key].type === 'text' ||
+          formData[key].type === 'number' ||
+          formData[key].type === 'date'
+        ) {
           return (
             <Input
               fieldKey={formData[key].key}
               field={formData[key]}
-              error={`${
-                errors[formData[key].key]
-                  ? errors[formData[key].key]?.message
-                  : ''
-              }`}
-              innerRef={() =>
-                register(formData[key].key, {
-                  required: formData[key].required,
-                })
-              }
+              onChange={onChange}
+              // error={`${
+              //   errors[formData[key].key]
+              //     ? errors[formData[key].key]?.message
+              //     : ''
+              // }`}
+              // innerRef={() =>
+              //   register(formData[key].key, {
+              //     required: formData[key].required,
+              //   })
+              // }
             />
           );
         }
@@ -50,16 +79,17 @@ const AddNew = ({ type, formData }: any) => {
             <Textarea
               fieldKey={formData[key].key}
               field={formData[key]}
-              error={`${
-                errors[formData[key].key]
-                  ? errors[formData[key].key]?.message
-                  : ''
-              }`}
-              innerRef={() =>
-                register(formData[key].key, {
-                  required: formData[key].required,
-                })
-              }
+              onChange={onChange}
+              // error={`${
+              //   errors[formData[key].key]
+              //     ? errors[formData[key].key]?.message
+              //     : ''
+              // }`}
+              // innerRef={() =>
+              //   register(formData[key].key, {
+              //     required: formData[key].required,
+              //   })
+              // }
             />
           );
         }
@@ -68,16 +98,17 @@ const AddNew = ({ type, formData }: any) => {
             <Select
               fieldKey={formData[key].key}
               field={formData[key]}
-              error={`${
-                errors[formData[key].key]
-                  ? errors[formData[key].key]?.message
-                  : ''
-              }`}
-              innerRef={() =>
-                register(formData[key].key, {
-                  required: formData[key].required,
-                })
-              }
+              onChange={onChange}
+              // error={`${
+              //   errors[formData[key].key]
+              //     ? errors[formData[key].key]?.message
+              //     : ''
+              // }`}
+              // innerRef={() =>
+              //   register(formData[key].key, {
+              //     required: formData[key].required,
+              //   })
+              // }
             />
           );
         }
@@ -86,16 +117,17 @@ const AddNew = ({ type, formData }: any) => {
             <Radio
               fieldKey={formData[key].key}
               field={formData[key]}
-              error={`${
-                errors[formData[key].key]
-                  ? errors[formData[key].key]?.message
-                  : ''
-              }`}
-              innerRef={() =>
-                register(formData[key].key, {
-                  required: formData[key].required,
-                })
-              }
+              onChange={onChangeRadio}
+              // error={`${
+              //   errors[formData[key].key]
+              //     ? errors[formData[key].key]?.message
+              //     : ''
+              // }`}
+              // innerRef={() =>
+              //   register(formData[key].key, {
+              //     required: formData[key].required,
+              //   })
+              // }
             />
           );
         }
@@ -107,6 +139,7 @@ const AddNew = ({ type, formData }: any) => {
           style="outline-warning"
           label="Submit"
           type="submit"
+          onClick={onSubmit}
         />
       </div>
     </form>

@@ -1,4 +1,4 @@
-const Select = ({ field, props, error, fieldKey, innerRef }: any) => {
+const Select = ({ field, props, error, fieldKey, innerRef, onChange }: any) => {
   return (
     <div className="my-3" key={fieldKey}>
       <label
@@ -14,13 +14,14 @@ const Select = ({ field, props, error, fieldKey, innerRef }: any) => {
         name={field.key}
         required={field.required}
         ref={innerRef}
+        onChange={onChange}
         {...props}
       >
         <option key={-1} value={-1}>
           {field.placeholder}
         </option>
         {field.options.map((option: any) => (
-          <option key={option.key} value={option.value}>
+          <option key={option.key} value={option.key}>
             {option.value}
           </option>
         ))}
