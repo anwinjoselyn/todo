@@ -28,7 +28,7 @@ const Drawer = ({
         className={`px-5 py-4 drawer ${width} ${show && 'open'} ${className}`}
       >
         <div
-          className={`flex align-center position-sticky fixed-top mb-3 ${
+          className={`flex align-center position-sticky fixed-top mb-3 pb-2 border-b border-gray-dark ${
             title ? 'justify-between' : 'justify-end'
           }`}
         >

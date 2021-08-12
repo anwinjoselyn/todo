@@ -23,14 +23,14 @@ const AddNew = ({ type, formData }: any) => {
   const onSubmit = (data: any) => {
     console.log('data', data);
   };
-console.log('errors', errors)
+  console.log('errors', errors);
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       {Object.keys(formData).map((key: any) => {
         if (formData[key].type === 'text' || formData[key].type === 'number') {
           return (
             <Input
-              key={formData[key].key}
+              fieldKey={formData[key].key}
               field={formData[key]}
               error={`${
                 errors[formData[key].key]
@@ -48,7 +48,7 @@ console.log('errors', errors)
         if (formData[key].type === 'textarea') {
           return (
             <Textarea
-              key={formData[key].key}
+              fieldKey={formData[key].key}
               field={formData[key]}
               error={`${
                 errors[formData[key].key]
@@ -66,7 +66,7 @@ console.log('errors', errors)
         if (formData[key].type === 'select') {
           return (
             <Select
-              key={formData[key].key}
+              fieldKey={formData[key].key}
               field={formData[key]}
               error={`${
                 errors[formData[key].key]
@@ -84,7 +84,7 @@ console.log('errors', errors)
         if (formData[key].type === 'radio') {
           return (
             <Radio
-              key={formData[key].key}
+              fieldKey={formData[key].key}
               field={formData[key]}
               error={`${
                 errors[formData[key].key]
@@ -100,7 +100,15 @@ console.log('errors', errors)
           );
         }
       })}
-      <CustomButton label="Submit" type="submit" />
+      <div className=" border-t border-gray">
+        <CustomButton
+          className="float-right my-5"
+          size="large"
+          style="outline-warning"
+          label="Submit"
+          type="submit"
+        />
+      </div>
     </form>
   );
 };
