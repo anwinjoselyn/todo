@@ -3,7 +3,7 @@ import { CustomButton, SelectPanel, Drawer } from '../components';
 import AddNew from '../components/AddNew';
 import { todoFormData } from '../utils/defaultValues';
 
-const Tasks = ({ tasks, people }: any) => {
+const Tasks = ({ tasks, people, user }: any) => {
   const [state, setState] = useState<any>({
     selectionList: [
       { key: 1, label: 'Today', value: 'today', selected: true },
@@ -88,7 +88,12 @@ const Tasks = ({ tasks, people }: any) => {
           width="w40"
           closeIcon={<span className="material-icons">cancel</span>}
         >
-          <AddNew type="new" formData={todoFormData} />
+          <AddNew
+            type="new"
+            formData={todoFormData}
+            user={user}
+            onHide={() => setState({ ...state, show: false })}
+          />
         </Drawer>
       )}
     </div>

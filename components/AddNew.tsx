@@ -2,11 +2,19 @@
 // import { useEffect } from 'react';
 // import { useForm } from 'react-hook-form';
 import { useState } from 'react';
+import dayjs from 'dayjs';
+
 import { Input, Textarea, Select, Radio } from '.';
 import CustomButton from './elements/Button/CustomButton';
 
-const AddNew = ({ type, formData }: any) => {
+import { createTodo } from '../libs/todos';
+import toast from 'react-hot-toast';
+
+import { useAuth } from '../hooks/useAuth';
+
+const AddNew = ({ type, formData, onHide }: any) => {
   const [state, setState] = useState<{ [key: string]: any }>({ formData });
+  const { user } = useAuth();
   // const {
   //   handleSubmit,
   //   register,
@@ -17,7 +25,7 @@ const AddNew = ({ type, formData }: any) => {
   //   shouldUnregister: false,
   //   mode: 'onBlur',
   // });
-  console.log('formData', formData);
+  console.log('user', user);
   // useEffect(() => {
   //   Object.keys(formData).forEach((key: any) => {
   //     setValue(formData[key].key, formData[key].value);
@@ -38,14 +46,59 @@ const AddNew = ({ type, formData }: any) => {
   };
 
   const onChangeRadio = (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log('e.target.checked', e.target.checked)
+    console.log('e.target.checked', e.target.checked);
     state.formData[e.target.name].value = !state.formData[e.target.name].value;
     setState({ ...state });
   };
 
-  const onSubmit = () => {
-    // const data = getValues();
-    // console.log('data', data);
+  const validateFields = () => {
+    return (
+      state.formData.title.value &&
+      state.formData.title.value.length > 2 &&
+      state.formData.body.value &&
+      state.formData.body.value.length > 3 &&
+      state.formData.dueDate.value &&
+      dayjs(state.formData.dueDate.value).isValid() &&
+      state.formData.assignedTo.value &&
+      state.formData.assignedTo.value !== -1 &&
+      state.formData.type.value &&
+      state.formData.type.value !== -1 &&
+      user &&
+      user.uid
+    );
+  };
+
+  const showToast = () => {
+    toast.error(
+      'Please fill all required fields - Title, Type, Assigned To & Content are mandatory!',
+      { duration: 5000 }
+    );
+  };
+  console.log('state', state);
+  const onSubmit = (e: React.SyntheticEvent) => {
+    e.preventDefault();
+    const data = {
+      title: state.formData.title.value,
+      type: state.formData.type.value,
+      assignedTo: state.formData.assignedTo.value,
+      authorId: user && user.uid ? user.uid : '',
+      body: state.formData.body.value,
+      completedDate: state.formData.completedDate.value
+        ? state.formData.completedDate.value.format('DD-MM-YYYY')
+        : '',
+      createdAt: dayjs().format('DD-MM-YYYY'),
+      dueDate: dayjs(state.formData.dueDate.value).format('DD-MM-YYYY'),
+      isCompleted: state.formData.isCompleted.value,
+      lastUpdatedAt: '',
+    };
+    console.log('data', data);
+    const response = createTodo(data);
+    console.log('response', response);
+    if (response) {
+      onHide();
+    } else {
+      toast.error('Something went wrong. Please try again later.')
+    }
   };
   console.log('state', state);
   return (
@@ -56,6 +109,12 @@ const AddNew = ({ type, formData }: any) => {
           formData[key].type === 'number' ||
           formData[key].type === 'date'
         ) {
+          if (
+            formData[key].key === 'completedDate' &&
+            formData.isCompleted.value
+          ) {
+            return;
+          }
           return (
             <Input
               fieldKey={formData[key].key}
@@ -139,7 +198,7 @@ const AddNew = ({ type, formData }: any) => {
           style="outline-warning"
           label="Submit"
           type="submit"
-          onClick={onSubmit}
+          onClick={!validateFields() ? showToast : onSubmit}
         />
       </div>
     </form>

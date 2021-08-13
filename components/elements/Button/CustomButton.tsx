@@ -14,16 +14,13 @@ const Button = ({
   style,
   size,
 }: ButtonPropsIF ) => {
-  const onButtonClick = () => {
-    onClick();
-  };
 
   return (
     <button
       type={type}
       name={name}
       className={`btn flex items-center justify-center rounded p-1 font-semibold text-opacity-80 hover:text-opacity-100 ${style} ${size} ${className ?? null} ${status || ''}`}
-      onClick={onClick ? onButtonClick : null}
+      onClick={onClick ? onClick : null}
       disabled={disabled}
     >
       {status === 'submitted' ? (

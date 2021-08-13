@@ -220,12 +220,20 @@ export const todoFormData: { [key: string]: any } = {
   isCompleted: {
     key: 'isCompleted',
     label: 'Mark Complete?',
-    value: null,
+    value: false,
     type: 'radio',
     required: false,
     options: [
       { title: 'YES', value: true },
       { title: 'NO', value: false },
     ],
+  },
+  completedDate: {
+    key: 'completedDate',
+    label: 'Completed Date',
+    value: '',
+    type: 'date',
+    required: true,
+    placeholder: new Date(),
   },
 };

@@ -3,6 +3,7 @@ import '../styles/style.css';
 import Head from 'next/head';
 import { AppProps } from 'next/app';
 import useSWR from 'swr';
+import { Toaster } from 'react-hot-toast';
 
 import fetcher from '../libs/fetcher';
 import useRequireAuth from '../hooks/useRequireAuth';
@@ -29,7 +30,7 @@ export default function MyApp({ Component, pageProps }: AppProps): any {
   if (!data || data.error) {
     return <Container>Loading...</Container>;
   }
-
+console.log('auth', auth)
   return (
     <AuthProvider>
       <Container>
@@ -50,6 +51,7 @@ export default function MyApp({ Component, pageProps }: AppProps): any {
           tasks={data && data.todos ? data.todos : []}
           people={users && users.users ? users.users : []}
         />
+        <Toaster />
       </Container>
     </AuthProvider>
   );
