@@ -24,7 +24,7 @@ const Button = ({
       disabled={disabled}
     >
       {status === 'submitted' ? (
-        <span className="material-icons text-primary-text-color mr-2">
+        <span className={`material-icons text-primary-text-color mr-2`}>
           done_all
         </span>
       ) : null}

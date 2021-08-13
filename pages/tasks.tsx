@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { CustomButton, SelectPanel, Drawer } from '../components';
 import AddNew from '../components/AddNew';
-import { todoFormData } from '../utils/defaultValues';
+import { todoFormData, todoTypes } from '../utils/defaultValues';
 
 const Tasks = ({ tasks, people, user }: any) => {
   const [state, setState] = useState<any>({
@@ -13,6 +13,7 @@ const Tasks = ({ tasks, people, user }: any) => {
     ],
     selectedIndex: 0,
     show: false,
+    type: 'new',
   });
 
   useEffect(() => {
@@ -43,24 +44,56 @@ const Tasks = ({ tasks, people, user }: any) => {
           onClick={() => setState({ ...state, show: !state.show })}
         />
       </div>
-      <table className="table-fixed border-collapse border border-green-800">
+      <table className="border-separate table-fixed border-collapse rounded-lg">
         <thead>
-          <tr>
-            <th className="w-1/6 border border-green-600">Title</th>
-            <th className="w-1/6 border border-green-600">Type</th>
-            <th className="w-1/6 border border-green-600">Owner</th>
-            <th className="w-1/6 border border-green-600">Content</th>
-            <th className="w-1/6 border border-green-600">Due Date</th>
-            <th className="w-1/6 border border-green-600">Last Updated</th>
+          <tr className="rounded-lg">
+            <th className="w-1/6 text-sm py-1 text-left px-2 rounded-md bg-gray">
+              Title
+            </th>
+            <th className="w-1/12 rounded-md bg-gray text-sm py-1 text-left px-2">
+              Type
+            </th>
+            <th className="w-1/12 bg-gray rounded-md text-sm py-1 text-left px-2">
+              Owner
+            </th>
+            <th className="w-2/6 bg-gray rounded-md text-sm py-1 text-left px-2">
+              Content
+            </th>
+            <th className="w-1/12 bg-gray rounded-md text-sm py-1 text-left px-2">
+              Due On
+            </th>
+            <th className="w-1/12 bg-gray rounded-md text-sm py-1 text-left px-2">
+              Updated
+            </th>
+            <th className="w-1/12 bg-gray rounded-md text-sm py-1 px-2">
+              Actions
+            </th>
           </tr>
         </thead>
         <tbody>
           {tasks &&
             tasks.map((task: any) => (
               <tr key={task.id}>
-                <td className="border border-green-600">{task.title}</td>
-                <td className="border border-green-600">{task.type}</td>
-                <td className="border border-green-600">
+                <td className="px-2 text-sm py-1">
+                  {task.title}
+                </td>
+                <td className="flex align-center px-2 text-sm py-1 ring-offset-0 ring-0">
+                  {todoTypes.find(
+                    (typ: any) =>
+                      typ.title.toLowerCase() === task.type.toLowerCase()
+                  ) && (
+                    <span className="material-icons mr-2 text-sm text-blue">
+                      {
+                        todoTypes.find(
+                          (typ: any) =>
+                            typ.title.toLowerCase() === task.type.toLowerCase()
+                        ).icon
+                      }
+                    </span>
+                  )}
+                  {task.type.toUpperCase()}
+                </td>
+                <td className="px-2 text-sm py-1">
                   {task.assignedTo &&
                   people &&
                   people.length > 0 &&
@@ -70,10 +103,31 @@ const Tasks = ({ tasks, people, user }: any) => {
                       ).name
                     : '---'}
                 </td>
-                <td className="border border-green-600">{task.body}</td>
-                <td className="border border-green-600">{task.dueDate}</td>
-                <td className="border border-green-600">
+                <td className="px-2 text-sm py-1">
+                  {task.body}
+                </td>
+                <td className="px-2 text-sm py-1">
+                  {task.dueDate}
+                </td>
+                <td className="px-2 text-sm py-1">
                   {task.lastUpdatedAt}
+                </td>
+                <td className="px-2 text-sm py-1">
+                  <div className="flex align-center justify-center">
+                    <CustomButton
+                      size="small"
+                      style="outline-info"
+                      label={<span className="material-icons small">edit</span>}
+                      className="mr-2"
+                    />
+                    <CustomButton
+                      size="small"
+                      style="outline-danger"
+                      label={
+                        <span className="material-icons small">delete</span>
+                      }
+                    />
+                  </div>
                 </td>
               </tr>
             ))}
@@ -89,7 +143,7 @@ const Tasks = ({ tasks, people, user }: any) => {
           closeIcon={<span className="material-icons">cancel</span>}
         >
           <AddNew
-            type="new"
+            type={state.type}
             formData={todoFormData}
             user={user}
             onHide={() => setState({ ...state, show: false })}

@@ -8,7 +8,7 @@ export default function Home({tasks}: any) {
       completed: 0,
     };
     const todosOfSameType: any = tasks.filter(
-      (todo: any) => todo.type === type.title
+      (todo: any) => todo.type.toLowerCase() === type.title.toLowerCase()
     );
 
     if (todosOfSameType.length > 0) {
