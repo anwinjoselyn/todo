@@ -20,7 +20,7 @@ const Input = ({ field, props, error, fieldKey, onChange }: any) => {
         autoComplete="off"
         {...props}
         onChange={onChange}
-        value={field.type === 'date' ? new Date(field.value) : field.value}
+        value={field.type === 'date' ? field.value || dayjs(field.value).format('dd/MM/yyyy') : field.value}
       />
       <p className={`${error ? '' : 'invisible'}`}>{error && error}</p>
     </div>

@@ -11,13 +11,17 @@ const Radio = ({ field, props, error, fieldKey, onChange }: any) => {
             id={option.key}
             name={field.key}
             onChange={onChange}
-            checked={field.value}
+            checked={option.title === 'YES' ? field.value : !field.value}
             {...props}
           />
-          <label className="text-sm" htmlFor={option.title}>{option.title}</label>
+          <label className="text-sm" htmlFor={option.title}>
+            {option.title}
+          </label>
         </div>
       ))}
-      <p className={`text-sm text-red ${error ? '' : 'invisible'}`}>{error && error}</p>
+      <p className={`text-sm text-red ${error ? '' : 'invisible'}`}>
+        {error && error}
+      </p>
     </div>
   );
 };

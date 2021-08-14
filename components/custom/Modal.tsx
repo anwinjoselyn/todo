@@ -10,6 +10,7 @@ interface Props {
   closable?: boolean;
   closeIcon?: JSX.Element | any;
   size?: Size;
+  footer?: JSX.Element | any;
 }
 
 const Modal = ({
@@ -21,10 +22,11 @@ const Modal = ({
   closable,
   closeIcon,
   size,
+  footer,
 }: Props) => {
   return (
     <div
-      className={`modal bg-bg-light p-3 fixed rounded-md overflow-auto z-50 top-1/2 left-1/2 ${size} ${
+      className={`modal bg-bg-light p-3 fixed rounded-md overflow-auto z-50 top-1/2 left-1/2 pb-4 bottom-6 ${size} ${
         show && 'open'
       } ${className}`}
     >
@@ -35,12 +37,17 @@ const Modal = ({
       >
         {title ? <span className="">{title}</span> : null}
         {closable && (
-          <span className="cursor-pointer text-gray-dark" role="presentation" onClick={onHide}>
+          <span
+            className="cursor-pointer text-gray-dark"
+            role="presentation"
+            onClick={onHide}
+          >
             {closeIcon || <span className="material-icons">close</span>}
           </span>
         )}
       </div>
       {children}
+      {footer && <div className="">{footer}</div>}
     </div>
   );
 };

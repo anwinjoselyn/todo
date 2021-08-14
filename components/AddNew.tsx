@@ -7,38 +7,16 @@ import dayjs from 'dayjs';
 import { Input, Textarea, Select, Radio } from '.';
 import CustomButton from './elements/Button/CustomButton';
 
-import { createTodo } from '../libs/todos';
+import { createTodo, updateTodo } from '../libs/todos';
 import toast from 'react-hot-toast';
 
 import { useAuth } from '../hooks/useAuth';
 
-const AddNew = ({ type, formData, onHide }: any) => {
+const AddNew = ({ type, formData, onHide, id }: any) => {
   const [state, setState] = useState<{ [key: string]: any }>({ formData });
   const { user } = useAuth();
-  // const {
-  //   handleSubmit,
-  //   register,
-  //   formState: { errors },
-  //   setValue,
-  //   getValues,
-  // } = useForm({
-  //   shouldUnregister: false,
-  //   mode: 'onBlur',
-  // });
-  console.log('user', user);
-  // useEffect(() => {
-  //   Object.keys(formData).forEach((key: any) => {
-  //     setValue(formData[key].key, formData[key].value);
-  //   });
-  // }, []);
 
-  // useEffect(() => {
-  //   Object.keys(formData).forEach((key: any) => {
-  //   register(formData[key].key, {
-  //     validate: (value) => 'This is required.',
-  //   });
-  // })
-  // }, [register]);
+  // console.log('user', user);
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     state.formData[e.target.name].value = e.target.value;
@@ -46,7 +24,6 @@ const AddNew = ({ type, formData, onHide }: any) => {
   };
 
   const onChangeRadio = (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log('e.target.checked', e.target.checked);
     state.formData[e.target.name].value = !state.formData[e.target.name].value;
     setState({ ...state });
   };
@@ -77,28 +54,32 @@ const AddNew = ({ type, formData, onHide }: any) => {
   console.log('state', state);
   const onSubmit = (e: React.SyntheticEvent) => {
     e.preventDefault();
-    const data = {
+    const data: any = {
       title: state.formData.title.value,
       type: state.formData.type.value,
       assignedTo: state.formData.assignedTo.value,
       authorId: user && user.uid ? user.uid : '',
       body: state.formData.body.value,
       completedDate: state.formData.completedDate.value
-        ? state.formData.completedDate.value.format('DD-MM-YYYY')
+        ? dayjs(state.formData.completedDate.value).format('YYYY-MM-DD')
         : '',
-      createdAt: dayjs().format('DD-MM-YYYY'),
-      dueDate: dayjs(state.formData.dueDate.value).format('DD-MM-YYYY'),
+      dueDate: dayjs(state.formData.dueDate.value).format('YYYY-MM-DD'),
       isCompleted: state.formData.isCompleted.value,
-      lastUpdatedAt: '',
+      lastUpdatedAt: type === 'edit' ? dayjs().format('YYYY-MM-DD') : '',
     };
-    console.log('data', data);
-    const response = createTodo(data);
-    console.log('response', response);
-    if (response) {
-      onHide();
-    } else {
-      toast.error('Something went wrong. Please try again later.')
+    if (type === 'new' || type === '') {
+      data.createdAt = dayjs().format('YYYY-MM-DD');
     }
+    console.log('data', data);
+    const response = type === 'edit' ? updateTodo(id, data) : createTodo(data);
+    response.then((resp: any) => {
+      console.log('resp', resp);
+      if (resp.success) {
+        onHide();
+      } else {
+        toast.error('Something went wrong. Please try again later.');
+      }
+    });
   };
   console.log('state', state);
   return (
@@ -109,10 +90,14 @@ const AddNew = ({ type, formData, onHide }: any) => {
           state.formData[key].type === 'number' ||
           state.formData[key].type === 'date'
         ) {
+          console.log(
+            "'state.formData['isCompleted']'",
+            state.formData['isCompleted']
+          );
           if (
+            state.formData[key].type === 'date' &&
             state.formData[key].key === 'completedDate' &&
-            state.formData.isCompleted.value &&
-            state.formData.isCompleted.value === true
+            !state.formData['isCompleted'].value
           ) {
             return;
           }
@@ -192,11 +177,11 @@ const AddNew = ({ type, formData, onHide }: any) => {
           );
         }
       })}
-      <div className=" border-t border-gray">
+      <div className="flex justify-end py-4">
         <CustomButton
-          className="float-right my-5"
+          className="px-10"
           size="large"
-          style="outline-warning"
+          style="info"
           label="Submit"
           type="submit"
           onClick={!validateFields() ? showToast : onSubmit}

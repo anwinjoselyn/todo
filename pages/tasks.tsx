@@ -18,8 +18,9 @@ const Tasks = ({ tasks, people, user }: any) => {
     type: 'new',
     showModal: false,
     editingTodo: {},
+    editingId: '',
   });
-
+  console.log('tasks', tasks);
   useEffect(() => {
     if (people) {
       if (Object.keys(todoFormData).indexOf('assignedTo') > -1) {
@@ -41,8 +42,9 @@ const Tasks = ({ tasks, people, user }: any) => {
         editingTodo[key].value = todo[key];
       }
     );
+    console.log('todo', todo)
     console.log('editingTodo', editingTodo);
-    setState({ ...state, editingTodo, showModal: true, type: 'edit' });
+    setState({ ...state, editingTodo, showModal: true, type: 'edit', editingId: todo.id });
   };
 
   const onSelect = (index: number) => {
@@ -183,7 +185,8 @@ const Tasks = ({ tasks, people, user }: any) => {
             type="edit"
             formData={state.editingTodo}
             user={user}
-            onHide={() => setState({ ...state, show: false, editingTodo: {} })}
+            onHide={() => setState({ ...state, showModal: false, editingTodo: {} })}
+            id={state.editingId}
           />
         </Modal>
       )}

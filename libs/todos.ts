@@ -34,13 +34,51 @@ export async function getAllTodos() {
 }
 
 export function createTodo(data: any) {
-  return db.collection('todos').add(data);
+  return db
+    .collection('todos')
+    .add(data)
+    .then(() => {
+      return {
+        success: true,
+      };
+    })
+    .catch(() => {
+      return {
+        success: false,
+      };
+    });
 }
 
 export function deleteTodo(id: any) {
-  return db.collection('todos').doc(id).delete();
+  return db
+    .collection('todos')
+    .doc(id)
+    .delete()
+    .then(() => {
+      return {
+        success: true,
+      };
+    })
+    .catch(() => {
+      return {
+        success: false,
+      };
+    });
 }
 
 export function updateTodo(id: any, data: any) {
-  return db.collection('todos').doc(id).update(data);
+  return db
+    .collection('todos')
+    .doc(id)
+    .update(data)
+    .then(() => {
+      return {
+        success: true,
+      };
+    })
+    .catch(() => {
+      return {
+        success: false,
+      };
+    });
 }
