@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
-import { CustomButton, SelectPanel, Drawer } from '../components';
+import dayjs from 'dayjs';
+
+import { CustomButton, SelectPanel, Drawer, Modal } from '../components';
 import AddNew from '../components/AddNew';
 import { todoFormData, todoTypes } from '../utils/defaultValues';
 
@@ -14,6 +16,8 @@ const Tasks = ({ tasks, people, user }: any) => {
     selectedIndex: 0,
     show: false,
     type: 'new',
+    showModal: false,
+    editingTodo: {},
   });
 
   useEffect(() => {
@@ -25,6 +29,21 @@ const Tasks = ({ tasks, people, user }: any) => {
       }
     }
   });
+  // console.log(
+  //   'JSON.parse(JSON.stringify(todoFormData))',
+  //   JSON.parse(JSON.stringify(todoFormData))
+  // );
+  const setEditingTodo = (todo: any) => {
+    let editingTodo = {};
+    Object.keys(JSON.parse(JSON.stringify(todoFormData))).forEach(
+      (key: any) => {
+        editingTodo[key] = todoFormData[key];
+        editingTodo[key].value = todo[key];
+      }
+    );
+    console.log('editingTodo', editingTodo);
+    setState({ ...state, editingTodo, showModal: true, type: 'edit' });
+  };
 
   const onSelect = (index: number) => {
     state.selectionList[index].selected = true;
@@ -74,9 +93,7 @@ const Tasks = ({ tasks, people, user }: any) => {
           {tasks &&
             tasks.map((task: any) => (
               <tr key={task.id}>
-                <td className="px-2 text-sm py-1">
-                  {task.title}
-                </td>
+                <td className="px-2 text-sm py-1">{task.title}</td>
                 <td className="flex align-center px-2 text-sm py-1 ring-offset-0 ring-0">
                   {todoTypes.find(
                     (typ: any) =>
@@ -103,14 +120,14 @@ const Tasks = ({ tasks, people, user }: any) => {
                       ).name
                     : '---'}
                 </td>
+                <td className="px-2 text-sm py-1">{task.body}</td>
                 <td className="px-2 text-sm py-1">
-                  {task.body}
+                  {dayjs(task.dueDate).format("DD MMM 'YY")}
                 </td>
                 <td className="px-2 text-sm py-1">
-                  {task.dueDate}
-                </td>
-                <td className="px-2 text-sm py-1">
-                  {task.lastUpdatedAt}
+                  {dayjs(task.lastUpdatedAt).isValid()
+                    ? dayjs(task.lastUpdatedAt).format("DD MMM 'YY")
+                    : '---'}
                 </td>
                 <td className="px-2 text-sm py-1">
                   <div className="flex align-center justify-center">
@@ -119,6 +136,7 @@ const Tasks = ({ tasks, people, user }: any) => {
                       style="outline-info"
                       label={<span className="material-icons small">edit</span>}
                       className="mr-2"
+                      onClick={() => setEditingTodo(task)}
                     />
                     <CustomButton
                       size="small"
@@ -143,12 +161,31 @@ const Tasks = ({ tasks, people, user }: any) => {
           closeIcon={<span className="material-icons">cancel</span>}
         >
           <AddNew
-            type={state.type}
+            type="new"
             formData={todoFormData}
             user={user}
             onHide={() => setState({ ...state, show: false })}
           />
         </Drawer>
+      )}
+      {state.showModal && (
+        <Modal
+          show={state.showModal}
+          onHide={() =>
+            setState({ ...state, showModal: false, editingTodo: {} })
+          }
+          title="Edit Task"
+          closable
+          size="lg"
+          closeIcon={<span className="material-icons">cancel</span>}
+        >
+          <AddNew
+            type="edit"
+            formData={state.editingTodo}
+            user={user}
+            onHide={() => setState({ ...state, show: false, editingTodo: {} })}
+          />
+        </Modal>
       )}
     </div>
   );

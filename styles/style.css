@@ -280,3 +280,48 @@ h3 {
   border: 1px solid var(--primary-text-color);
   color: var(--bg-light);
 }
+
+/* Modal */
+
+.modal {
+  min-height: 250px;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+}
+
+.modal.xl {
+  width: 800px;
+  min-height: 500px;
+  max-height: 650px;
+  margin-top: -250px; /* Half the height */
+  margin-left: -300px; /* Half the width */
+}
+
+.modal.lg {
+  width: 650px;
+  min-height: 500px;
+  max-height: 650px;
+  margin-top: -250px; /* Half the height */
+  margin-left: -250px; /* Half the width */
+}
+
+.modal.md {
+  width: 500px;
+  min-height: 350px;
+  max-height: 500px;
+  margin-top: -175px; /* Half the height */
+  margin-left: -250px; /* Half the width */
+}
+
+.modal.sm {
+  width: 350px;
+  max-height: 350px;
+  margin-top: -175px; /* Half the height */
+  margin-left: -175px; /* Half the width */
+}
+
+.modal.xs {
+  width: 250px;
+  max-height: 250px;
+  margin-top: -125px; /* Half the height */
+  margin-left: -125px; /* Half the width */
+}

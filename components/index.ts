@@ -7,6 +7,7 @@ import Input from './formItems/Input';
 import Radio from './formItems/Radio';
 import Select from './formItems/Select';
 import Textarea from './formItems/Textarea';
+import Modal from './custom/Modal';
 
 export {
   Button,
@@ -18,4 +19,5 @@ export {
   Radio,
   Select,
   Textarea,
+  Modal,
 };

@@ -1,9 +1,13 @@
 import React from 'react';
+import dayjs from 'dayjs';
 
-const Input = ({ field, props, error, innerRef, fieldKey, onChange }: any) => {
+const Input = ({ field, props, error, fieldKey, onChange }: any) => {
   return (
     <div className="my-3" key={fieldKey}>
-      <label className="w-full text-secondary-text-color text-sm" htmlFor={field.key}>
+      <label
+        className="w-full text-secondary-text-color text-sm"
+        htmlFor={field.key}
+      >
         {field.label}
       </label>
       <input
@@ -14,9 +18,9 @@ const Input = ({ field, props, error, innerRef, fieldKey, onChange }: any) => {
         required={field.required}
         placeholder={field.placeholder}
         autoComplete="off"
-        ref={innerRef}
         {...props}
         onChange={onChange}
+        value={field.type === 'date' ? new Date(field.value) : field.value}
       />
       <p className={`${error ? '' : 'invisible'}`}>{error && error}</p>
     </div>

@@ -105,20 +105,21 @@ const AddNew = ({ type, formData, onHide }: any) => {
     <form onSubmit={onSubmit}>
       {Object.keys(state.formData).map((key: any) => {
         if (
-          formData[key].type === 'text' ||
-          formData[key].type === 'number' ||
-          formData[key].type === 'date'
+          state.formData[key].type === 'text' ||
+          state.formData[key].type === 'number' ||
+          state.formData[key].type === 'date'
         ) {
           if (
-            formData[key].key === 'completedDate' &&
-            formData.isCompleted.value
+            state.formData[key].key === 'completedDate' &&
+            state.formData.isCompleted.value &&
+            state.formData.isCompleted.value === true
           ) {
             return;
           }
           return (
             <Input
-              fieldKey={formData[key].key}
-              field={formData[key]}
+              fieldKey={state.formData[key].key}
+              field={state.formData[key]}
               onChange={onChange}
               // error={`${
               //   errors[formData[key].key]
@@ -133,11 +134,11 @@ const AddNew = ({ type, formData, onHide }: any) => {
             />
           );
         }
-        if (formData[key].type === 'textarea') {
+        if (state.formData[key].type === 'textarea') {
           return (
             <Textarea
-              fieldKey={formData[key].key}
-              field={formData[key]}
+              fieldKey={state.formData[key].key}
+              field={state.formData[key]}
               onChange={onChange}
               // error={`${
               //   errors[formData[key].key]
@@ -152,11 +153,11 @@ const AddNew = ({ type, formData, onHide }: any) => {
             />
           );
         }
-        if (formData[key].type === 'select') {
+        if (state.formData[key].type === 'select') {
           return (
             <Select
-              fieldKey={formData[key].key}
-              field={formData[key]}
+              fieldKey={state.formData[key].key}
+              field={state.formData[key]}
               onChange={onChange}
               // error={`${
               //   errors[formData[key].key]
@@ -171,11 +172,11 @@ const AddNew = ({ type, formData, onHide }: any) => {
             />
           );
         }
-        if (formData[key].type === 'radio') {
+        if (state.formData[key].type === 'radio') {
           return (
             <Radio
-              fieldKey={formData[key].key}
-              field={formData[key]}
+              fieldKey={state.formData[key].key}
+              field={state.formData[key]}
               onChange={onChangeRadio}
               // error={`${
               //   errors[formData[key].key]

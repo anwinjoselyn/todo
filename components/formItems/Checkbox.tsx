@@ -1,4 +1,4 @@
-const Checkbox = ({ field, props, error, fieldKey, innerRef }: any) => {
+const Checkbox = ({ field, props, error, fieldKey }: any) => {
   return (
     <div className="my-3" key={fieldKey}>
       <p className="w-full text-secondary-text-color text-sm">{field.label}</p>
@@ -10,8 +10,7 @@ const Checkbox = ({ field, props, error, fieldKey, innerRef }: any) => {
             type={option.type}
             id={option.key}
             name={field.key}
-            checked={option.checked}
-            ref={innerRef}
+            checked={field.checked}
             {...props}
           />
           <label className="text-sm" htmlFor={option.key}>

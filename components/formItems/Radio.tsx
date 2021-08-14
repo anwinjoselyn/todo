@@ -1,4 +1,4 @@
-const Radio = ({ field, props, error, fieldKey, innerRef, onChange }: any) => {
+const Radio = ({ field, props, error, fieldKey, onChange }: any) => {
   return (
     <div className="my-3" key={fieldKey}>
       <p className="w-full text-secondary-text-color text-sm">{field.label}</p>
@@ -10,9 +10,8 @@ const Radio = ({ field, props, error, fieldKey, innerRef, onChange }: any) => {
             type={field.type}
             id={option.key}
             name={field.key}
-            ref={innerRef}
             onChange={onChange}
-            value={field.value}
+            checked={field.value}
             {...props}
           />
           <label className="text-sm" htmlFor={option.title}>{option.title}</label>
