@@ -30,9 +30,9 @@ export default function Home({tasks}: any) {
           return (
             <div
               key={type.id}
-              className="w-1/4 h-40 p-2 border border-border-color m-2 rounded-md bg-bg-other text-bg-light"
+              className="w-1/4 h-40 border border-border-color m-2 rounded-lg hover:shadow-md"
             >
-              <h2 className="text-center py-2 text-2xl">{type.title}</h2>
+              <h2 className="text-center py-2 text-2xl bg-bg-other text-bg-light rounded-t-lg">{type.title}</h2>
               <div className="py-2">{type.description}</div>
               <div className="text-center py-3 flex place-content-between px-3">
               <span>Open: {summ.total - summ.completed}</span>

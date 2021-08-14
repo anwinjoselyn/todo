@@ -5,10 +5,13 @@ import { CustomButton, SelectPanel, Drawer, Modal } from '../components';
 import AddNew from '../components/AddNew';
 import { todoFormData, todoTypes } from '../utils/defaultValues';
 
+const todayDate = dayjs().format('YYYY-MM-DD');
+
 const Tasks = ({ tasks, people, user }: any) => {
   const [state, setState] = useState<any>({
     selectionList: [
-      { key: 1, label: 'Today', value: 'today', selected: true },
+      { key: 5, label: 'All', value: 'all', selected: true },
+      { key: 1, label: 'Today', value: 'today', selected: false },
       { key: 2, label: 'This Week', value: 'week', selected: false },
       { key: 3, label: 'This Month', value: 'month', selected: false },
       { key: 4, label: 'Future', value: 'future', selected: false },
@@ -19,8 +22,11 @@ const Tasks = ({ tasks, people, user }: any) => {
     showModal: false,
     editingTodo: {},
     editingId: '',
+    filteredTasks: tasks.filter((t: any) => !t.isCompleted),
+    allTasks: tasks,
+    allOpenTasks: tasks.filter((t: any) => !t.isCompleted),
   });
-  console.log('tasks', tasks);
+
   useEffect(() => {
     if (people) {
       if (Object.keys(todoFormData).indexOf('assignedTo') > -1) {
@@ -30,10 +36,7 @@ const Tasks = ({ tasks, people, user }: any) => {
       }
     }
   });
-  // console.log(
-  //   'JSON.parse(JSON.stringify(todoFormData))',
-  //   JSON.parse(JSON.stringify(todoFormData))
-  // );
+
   const setEditingTodo = (todo: any) => {
     let editingTodo = {};
     Object.keys(JSON.parse(JSON.stringify(todoFormData))).forEach(
@@ -42,18 +45,53 @@ const Tasks = ({ tasks, people, user }: any) => {
         editingTodo[key].value = todo[key];
       }
     );
-    console.log('todo', todo)
+    console.log('todo', todo);
     console.log('editingTodo', editingTodo);
-    setState({ ...state, editingTodo, showModal: true, type: 'edit', editingId: todo.id });
+    setState({
+      ...state,
+      editingTodo,
+      showModal: true,
+      type: 'edit',
+      editingId: todo.id,
+    });
   };
 
   const onSelect = (index: number) => {
     state.selectionList[index].selected = true;
     state.selectionList[state.selectedIndex].selected = false;
     state.selectedIndex = index;
+    const selectedValue = state.selectionList[index].value;
+
+    switch (selectedValue) {
+      default:
+        break;
+      case 'today':
+        state.filteredTasks = state.allOpenTasks.filter((t: any) =>
+          dayjs(t.dueDate).isSame(todayDate)
+        );
+        break;
+      case 'week':
+        state.filteredTasks = state.allOpenTasks.filter((t: any) =>
+          dayjs(t.dueDate).isSame(todayDate, 'week')
+        );
+        break;
+      case 'month':
+        state.filteredTasks = state.allOpenTasks.filter((t: any) =>
+          dayjs(t.dueDate).isSame(dayjs(), 'month')
+        );
+        break;
+      case 'future':
+        state.filteredTasks = state.allOpenTasks.filter((t: any) =>
+          dayjs(t.dueDate).isAfter(dayjs())
+        );
+        break;
+      case 'all':
+        state.filteredTasks = state.allOpenTasks;
+        break;
+    }
     setState({ ...state });
   };
-  console.log('todoFormData', todoFormData);
+  console.log('state', state);
   return (
     <div className="p-5">
       <div className="flex justify-between mb-5">
@@ -65,7 +103,7 @@ const Tasks = ({ tasks, people, user }: any) => {
           onClick={() => setState({ ...state, show: !state.show })}
         />
       </div>
-      <table className="border-separate table-fixed border-collapse rounded-lg">
+      <table className="border-separate table-fixed border-collapse rounded-lg shadow-custom1 p-3">
         <thead>
           <tr className="rounded-lg">
             <th className="w-1/6 text-sm py-1 text-left px-2 rounded-md bg-gray">
@@ -77,7 +115,7 @@ const Tasks = ({ tasks, people, user }: any) => {
             <th className="w-1/12 bg-gray rounded-md text-sm py-1 text-left px-2">
               Owner
             </th>
-            <th className="w-2/6 bg-gray rounded-md text-sm py-1 text-left px-2">
+            <th className="w-2/6 max-w-6xl bg-gray rounded-md text-sm py-1 text-left px-2">
               Content
             </th>
             <th className="w-1/12 bg-gray rounded-md text-sm py-1 text-left px-2">
@@ -92,65 +130,72 @@ const Tasks = ({ tasks, people, user }: any) => {
           </tr>
         </thead>
         <tbody>
-          {tasks &&
-            tasks.map((task: any) => (
-              <tr key={task.id}>
-                <td className="px-2 text-sm py-1">{task.title}</td>
-                <td className="flex align-center px-2 text-sm py-1 ring-offset-0 ring-0">
-                  {todoTypes.find(
-                    (typ: any) =>
-                      typ.title.toLowerCase() === task.type.toLowerCase()
-                  ) && (
-                    <span className="material-icons mr-2 text-sm text-blue">
-                      {
-                        todoTypes.find(
-                          (typ: any) =>
-                            typ.title.toLowerCase() === task.type.toLowerCase()
-                        ).icon
-                      }
-                    </span>
-                  )}
-                  {task.type.toUpperCase()}
-                </td>
-                <td className="px-2 text-sm py-1">
-                  {task.assignedTo &&
-                  people &&
-                  people.length > 0 &&
-                  people.find((person: any) => person.uid === task.assignedTo)
-                    ? people.find(
-                        (person: any) => person.uid === task.assignedTo
-                      ).name
-                    : '---'}
-                </td>
-                <td className="px-2 text-sm py-1">{task.body}</td>
-                <td className="px-2 text-sm py-1">
-                  {dayjs(task.dueDate).format("DD MMM 'YY")}
-                </td>
-                <td className="px-2 text-sm py-1">
-                  {dayjs(task.lastUpdatedAt).isValid()
-                    ? dayjs(task.lastUpdatedAt).format("DD MMM 'YY")
-                    : '---'}
-                </td>
-                <td className="px-2 text-sm py-1">
-                  <div className="flex align-center justify-center">
-                    <CustomButton
-                      size="small"
-                      style="outline-info"
-                      label={<span className="material-icons small">edit</span>}
-                      className="mr-2"
-                      onClick={() => setEditingTodo(task)}
-                    />
-                    <CustomButton
-                      size="small"
-                      style="outline-danger"
-                      label={
-                        <span className="material-icons small">delete</span>
-                      }
-                    />
-                  </div>
-                </td>
-              </tr>
-            ))}
+          {state.filteredTasks &&
+            state.filteredTasks
+              .sort((a: any, b: any) => b.createdAt - a.createdAt)
+              .map((task: any) => (
+                <tr key={task.id} className="hover:bg-gray-light h-10">
+                  <td className="px-2 text-sm py-1">{task.title}</td>
+                  <td className="px-2 text-sm py-1">
+                    <div className="flex align-center">
+                      {todoTypes.find(
+                        (typ: any) =>
+                          typ.title.toLowerCase() === task.type.toLowerCase()
+                      ) && (
+                        <span className="material-icons mr-2 text-sm text-blue">
+                          {
+                            todoTypes.find(
+                              (typ: any) =>
+                                typ.title.toLowerCase() ===
+                                task.type.toLowerCase()
+                            ).icon
+                          }
+                        </span>
+                      )}
+                      {task.type.toUpperCase()}
+                    </div>
+                  </td>
+                  <td className="px-2 text-sm py-1">
+                    {task.assignedTo &&
+                    people &&
+                    people.length > 0 &&
+                    people.find((person: any) => person.uid === task.assignedTo)
+                      ? people.find(
+                          (person: any) => person.uid === task.assignedTo
+                        ).name
+                      : '---'}
+                  </td>
+                  <td className="px-2 text-sm py-1">{task.body}</td>
+                  <td className="px-2 text-sm py-1">
+                    {dayjs(task.dueDate).format("DD MMM 'YY")}
+                  </td>
+                  <td className="px-2 text-sm py-1">
+                    {dayjs(task.lastUpdatedAt).isValid()
+                      ? dayjs(task.lastUpdatedAt).format("DD MMM 'YY")
+                      : '---'}
+                  </td>
+                  <td className="px-2 text-sm py-1">
+                    <div className="flex align-center justify-center">
+                      <CustomButton
+                        size="small"
+                        style="outline-info"
+                        label={
+                          <span className="material-icons small">edit</span>
+                        }
+                        className="mr-2"
+                        onClick={() => setEditingTodo(task)}
+                      />
+                      <CustomButton
+                        size="small"
+                        style="outline-danger"
+                        label={
+                          <span className="material-icons small">delete</span>
+                        }
+                      />
+                    </div>
+                  </td>
+                </tr>
+              ))}
         </tbody>
       </table>
       {state.show && (
@@ -185,7 +230,9 @@ const Tasks = ({ tasks, people, user }: any) => {
             type="edit"
             formData={state.editingTodo}
             user={user}
-            onHide={() => setState({ ...state, showModal: false, editingTodo: {} })}
+            onHide={() =>
+              setState({ ...state, showModal: false, editingTodo: {} })
+            }
             id={state.editingId}
           />
         </Modal>
