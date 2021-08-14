@@ -51,7 +51,7 @@ const AddNew = ({ type, formData, onHide, id }: any) => {
       { duration: 5000 }
     );
   };
-  console.log('state', state);
+
   const onSubmit = (e: React.SyntheticEvent) => {
     e.preventDefault();
     const data: any = {
@@ -81,7 +81,7 @@ const AddNew = ({ type, formData, onHide, id }: any) => {
       }
     });
   };
-  console.log('state', state);
+
   return (
     <form onSubmit={onSubmit}>
       {Object.keys(state.formData).map((key: any) => {

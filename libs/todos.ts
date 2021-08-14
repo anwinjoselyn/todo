@@ -49,21 +49,20 @@ export function createTodo(data: any) {
     });
 }
 
-export function deleteTodo(id: any) {
-  return db
-    .collection('todos')
-    .doc(id)
-    .delete()
-    .then(() => {
-      return {
-        success: true,
-      };
-    })
-    .catch(() => {
-      return {
-        success: false,
-      };
-    });
+export async function deleteTodo(id: any) {
+  try {
+    await db
+      .collection('todos')
+      .doc(id)
+      .delete();
+    return {
+      success: true,
+    };
+  } catch (e) {
+    return {
+      success: false,
+    };
+  }
 }
 
 export function updateTodo(id: any, data: any) {

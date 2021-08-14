@@ -45,8 +45,6 @@ const Tasks = ({ tasks, people, user }: any) => {
         editingTodo[key].value = todo[key];
       }
     );
-    console.log('todo', todo);
-    console.log('editingTodo', editingTodo);
     setState({
       ...state,
       editingTodo,
@@ -91,7 +89,7 @@ const Tasks = ({ tasks, people, user }: any) => {
     }
     setState({ ...state });
   };
-  console.log('state', state);
+
   return (
     <div className="p-5">
       <div className="flex justify-between mb-5">

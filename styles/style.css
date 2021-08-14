@@ -44,6 +44,10 @@ h3 {
   font-size: 20px;
 }
 
+textarea.noResize {
+  resize: none;
+}
+
 /* Drawer Component */
 
 .drawer {
