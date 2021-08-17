@@ -1,7 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
 import toast from 'react-hot-toast';
+
 import { CustomButton, SelectPanel, Textarea, Modal } from '../components';
 
 import { createTodo, updateTodo, deleteTodo } from '../libs/todos';
@@ -9,9 +11,8 @@ import { getRandomIntInclusive } from '../utils/helpers';
 
 const todayDate = dayjs().format('YYYY-MM-DD');
 
-type noteStatus = '' | 'edit' | 'delete' | 'new';
-
 const Notes = ({ tasks }: any) => {
+  const router = useRouter();
   const [state, setState] = useState<any>({
     selectionList: [
       { key: 5, label: 'All', value: 'all', selected: true },
@@ -31,7 +32,7 @@ const Notes = ({ tasks }: any) => {
   });
 
   useEffect(() => {
-    state.colors = state.filteredNotes.map((note: any) => {
+    state.colors = state.filteredNotes.map((_note: any) => {
       return getRandomIntInclusive(1, 13);
     });
     setState({ ...state });
@@ -84,75 +85,6 @@ const Notes = ({ tasks }: any) => {
     setState({ ...state });
   };
 
-  const onSubmit = (e: React.SyntheticEvent) => {
-    e.preventDefault();
-    const data: any = {
-      body: state.editingNote.body,
-      completedDate: state.editingNote.body.isCompleted
-        ? dayjs(state.formData.completedDate.value).format('YYYY-MM-DD')
-        : '',
-      isCompleted: state.editingNote.body.isCompleted,
-      lastUpdatedAt: dayjs().format('YYYY-MM-DD'),
-    };
-    if (status === 'new') {
-      data.createdAt = dayjs().format('YYYY-MM-DD');
-    }
-    console.log('data', data);
-    // let response: any = null;
-    // let message = '';
-    // if (state.status === 'new') {
-    //   response = createTodo(data);
-    //   message = `New Note Created!`;
-    // }
-    // if (state.status === 'edit') {
-    //   response = updateTodo(state.editingNote.id, data);
-    //   message = `Note with ID: ${state.editingNote.id} Updated successfully!`;
-    // }
-    // if (state.status === 'delete') {
-    //   response = deleteTodo(state.editingNote.id);
-    //   message = `Note with ID: ${state.editingNote.id} DELETED successfully!`;
-    // }
-
-    // response.then((resp: any) => {
-    //   console.log('resp', resp);
-    //   if (resp.success) {
-    //     toast.success(message);
-    //   } else {
-    //     toast.error('Something went wrong. Please try again later.');
-    //   }
-    // });
-    closeAll();
-  };
-
-  const modalData = () => {
-    let message = '';
-    if (state.status === 'edit') {
-      message = 'Are you sure you want to update the Note?';
-    }
-    if (state.status === 'delete') {
-      message = 'Are you sure you want to DELETE the Note?';
-    }
-    return (
-      <div className="">
-        <div className="">{message}</div>
-        <div className="">
-          <CustomButton
-            size="small"
-            style="danger"
-            label="NO"
-            onClick={closeAll}
-          />
-          <CustomButton
-            size="medium"
-            style="info"
-            label="YES"
-            onClick={onSubmit}
-          />
-        </div>
-      </div>
-    );
-  };
-
   const closeAll = () => {
     state.editingId = null;
     state.editingNote = {};
@@ -161,30 +93,154 @@ const Notes = ({ tasks }: any) => {
     setState({ ...state });
   };
 
+  const onSubmit = (e: React.SyntheticEvent) => {
+    e.preventDefault();
+    const data: any = {
+      body: state.editingNote.body,
+      completedDate: state.editingNote.isCompleted
+        ? dayjs(state.editingNote.completedDate).format('YYYY-MM-DD')
+        : '',
+      isCompleted: state.editingNote.isCompleted,
+      lastUpdatedAt: dayjs().format('YYYY-MM-DD'),
+    };
+    if (status === 'new') {
+      data.createdAt = dayjs().format('YYYY-MM-DD');
+    }
+    console.log('data', data);
+    let response: any = null;
+    let message = '';
+    if (state.status === 'new') {
+      response = createTodo(data);
+      message = `New Note Created!`;
+    }
+    if (state.status === 'edit') {
+      response = updateTodo(state.editingNote.id, data);
+      message = `Note with ID: ${state.editingNote.id} Updated successfully!`;
+    }
+    if (state.status === 'delete') {
+      response = deleteTodo(state.editingNote.id);
+      message = `Note with ID: ${state.editingNote.id} DELETED successfully!`;
+    }
+
+    response.then((resp: any) => {
+      console.log('resp', resp);
+      if (resp.success) {
+        toast.success(message);
+        setTimeout(() => {
+          router.push('/notes');
+        }, 3000);
+      } else {
+        toast.error('Something went wrong. Please try again later.');
+      }
+    });
+    closeAll();
+  };
+
+  const triggerConfirm = (type: string, note?: any) => {
+    if (note) {
+      state.editingNote = { ...state.editingNote, ...note };
+      state.editingId = note.id;
+    }
+    if (type === 'done') {
+      state.editingNote.isCompleted = true;
+      state.editingNote.completedDate = dayjs();
+    }
+    state.status = type;
+    state.showConfirmation = true;
+    setState({ ...state });
+  };
+
+  const createNote = () => {
+    const newNote = {
+      body: '',
+      createdAt: dayjs(),
+      isCompleted: false,
+    };
+    state.filteredNotes.push(newNote);
+    state.openNotes.push(newNote);
+    state.status = 'new';
+    state.editingNote = newNote;
+    state.colors.push(getRandomIntInclusive(1, 13));
+    setState({ ...state });
+  };
+
+  const ModalData = () => {
+    let message = '';
+    if (state.status === 'edit') {
+      message = 'Are you sure you want to update the Note?';
+    }
+    if (state.status === 'delete') {
+      message = 'Are you sure you want to DELETE the Note?';
+    }
+    if (state.status === 'done') {
+      message = 'Are you sure you want to mark this Note as COMPLETE?';
+    }
+    return (
+      <div className="">
+        <div className="p-4">{message}</div>
+        <div className="flex justify-between p-4">
+          <CustomButton
+            size="medium"
+            style="danger"
+            label="NO"
+            onClick={closeAll}
+            className="px-6 py-4"
+          />
+          <CustomButton
+            size="medium"
+            style="info"
+            label="YES"
+            onClick={onSubmit}
+            className="px-5 py-4"
+          />
+        </div>
+      </div>
+    );
+  };
+
   const renderNotes = (note: any, index: number) => {
     // const color = getRandomIntInclusive(1, 14);
     return (
       <div
-        key={note.id}
+        key={note.id ? note.id : index}
         className={`h-52 m-2 rounded-2xl shadow-custom1 hover:shadow-custom2 bg-notes-${state.colors[index]}`}
         onDoubleClick={() => setEditingNote(note)}
       >
         <div className="p-1 h-40 block">
-          <Textarea
-            fieldKey={note.id}
-            field={{
-              key: 'body',
-              value:
-                note.id === state.editingId ? state.editingId.body : note.body,
-              type: 'textarea',
-              rows: 6,
-            }}
-            onChange={onChange}
-            disabled={note.id !== state.editingId}
-            className={`border-0 bg-notes-${state.colors[index]}`}
-            style={{ resize: 'none' }}
-            noResize="noResize"
-          />
+          {state.status === 'new' ? (
+            <Textarea
+              fieldKey={index}
+              field={{
+                key: 'body',
+                value: note.body,
+                type: 'textarea',
+                rows: 6,
+              }}
+              onChange={onChange}
+              className={`border-0 bg-transparent`}
+              noResize="noResize"
+              onBlur={onSubmit}
+            />
+          ) : (
+            <Textarea
+              fieldKey={note.id}
+              field={{
+                key: 'body',
+                value:
+                  note.id === state.editingId
+                    ? state.editingId.body
+                    : note.body,
+                type: 'textarea',
+                rows: 6,
+              }}
+              onChange={onChange}
+              disabled={note.id !== state.editingId}
+              className={`border-0 bg-notes-${state.colors[index]}`}
+              style={{ resize: 'none' }}
+              noResize="noResize"
+              onBlur={() => triggerConfirm(state.status)}
+            />
+          )}
           {/* {note.body} */}
         </div>
         <div className="flex justify-between p-4">
@@ -192,26 +248,33 @@ const Notes = ({ tasks }: any) => {
             {dayjs(note.createdAt).format("DD MMM 'YY")}
           </span>
           <div className="flex">
-          <CustomButton
-            size="small"
-            style="ghost"
-            label={<span className="material-icons text-sm text-green-dark">done_all</span>}
-            onClick={() => setEditingNote(note)}
-          />
-          <CustomButton
-            size="small"
-            style="ghost"
-            label={<span className="material-icons text-sm text-blue">edit</span>}
-            onClick={() => setEditingNote(note)}
-          />
-          <CustomButton
-            size="small"
-            style="ghost"
-            label={<span className="material-icons text-sm text-red">delete</span>}
-            onClick={() => setEditingNote(note)}
-          />
+            <CustomButton
+              size="small"
+              style="ghost"
+              label={
+                <span className="material-icons text-sm text-green-dark">
+                  done_all
+                </span>
+              }
+              onClick={() => triggerConfirm('done', note)}
+            />
+            <CustomButton
+              size="small"
+              style="ghost"
+              label={
+                <span className="material-icons text-sm text-blue">edit</span>
+              }
+              onClick={() => setEditingNote(note)}
+            />
+            <CustomButton
+              size="small"
+              style="ghost"
+              label={
+                <span className="material-icons text-sm text-red">delete</span>
+              }
+              onClick={() => triggerConfirm('delete', note)}
+            />
           </div>
-          
         </div>
       </div>
     );
@@ -226,6 +289,7 @@ const Notes = ({ tasks }: any) => {
           size="large"
           style="warning"
           label={<span className="material-icons">add_box</span>}
+          onClick={createNote}
         />
       </div>
       <div className="grid grid-cols-4 md:grid-cols-4 sm:grid-cols-2 xs:grid-cols-1">
@@ -236,11 +300,12 @@ const Notes = ({ tasks }: any) => {
       </div>
       {state.showConfirmation && (
         <Modal
+          title="Confirmation Required"
           show={state.showConfirmation}
           onHide={() => setState({ ...state, showConfirmation: false })}
           size="xs"
         >
-          {modalData}
+          <ModalData />
         </Modal>
       )}
     </div>

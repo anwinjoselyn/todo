@@ -6,6 +6,7 @@ const Textarea = ({
   onChange,
   className,
   noResize,
+  onBlur,
 }: any) => {
   return (
     <div className="my-3" key={fieldKey}>
@@ -32,6 +33,7 @@ const Textarea = ({
         rows={field.rows}
         onChange={onChange}
         value={field.value}
+        onBlur={onBlur}
         {...props}
       />
       <p className={`${error ? '' : 'invisible'}`}>{error && error}</p>
