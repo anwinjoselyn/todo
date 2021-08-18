@@ -1,8 +1,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
 import toast from 'react-hot-toast';
+import { mutate } from 'swr';
 
 import { CustomButton, SelectPanel, Textarea, Modal } from '../components';
 
@@ -11,8 +11,7 @@ import { getRandomIntInclusive } from '../utils/helpers';
 
 const todayDate = dayjs().format('YYYY-MM-DD');
 
-const Notes = ({ tasks }: any) => {
-  const router = useRouter();
+const Notes = ({ tasks, mutateData }: any) => {
   const [state, setState] = useState<any>({
     selectionList: [
       { key: 5, label: 'All', value: 'all', selected: true },
@@ -126,9 +125,11 @@ const Notes = ({ tasks }: any) => {
       console.log('resp', resp);
       if (resp.success) {
         toast.success(message);
-        setTimeout(() => {
-          router.push('/notes');
-        }, 3000);
+        mutateData('todos');
+        // setTimeout(() => {
+        //   // router.push('/notes');
+        //   // window.location.reload();
+        // }, 3000);
       } else {
         toast.error('Something went wrong. Please try again later.');
       }
@@ -199,7 +200,6 @@ const Notes = ({ tasks }: any) => {
   };
 
   const renderNotes = (note: any, index: number) => {
-    // const color = getRandomIntInclusive(1, 14);
     return (
       <div
         key={note.id ? note.id : index}
@@ -238,7 +238,9 @@ const Notes = ({ tasks }: any) => {
               className={`border-0 bg-notes-${state.colors[index]}`}
               style={{ resize: 'none' }}
               noResize="noResize"
-              onBlur={() => triggerConfirm(state.status)}
+              onBlur={
+                state.status !== '' ? () => triggerConfirm(state.status) : null
+              }
             />
           )}
           {/* {note.body} */}

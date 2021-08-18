@@ -16,8 +16,17 @@ import { AuthProvider } from '../hooks/useAuth';
 export default function MyApp({ Component, pageProps }: AppProps): any {
   const auth = useRequireAuth();
 
-  const { data } = useSWR(`/api/todos`, fetcher);
-  const { data: users } = useSWR(`/api/users`, fetcher);
+  const { data, mutate: mutateTodos } = useSWR(`/api/todos`, fetcher);
+  const { data: users, mutate: mutateUsers } = useSWR(`/api/users`, fetcher);
+
+  const mutateData = (type: string) => {
+    if (type === 'todos') {
+      mutateTodos(`/api/todos`, false);
+    }
+    if (type === 'users') {
+      mutateUsers(`/api/users`, false);
+    }
+  };
 
   if (!auth.user) {
     return (
@@ -30,7 +39,7 @@ export default function MyApp({ Component, pageProps }: AppProps): any {
   if (!data || data.error) {
     return <Container>Loading...</Container>;
   }
-console.log('auth', auth)
+  console.log('auth', auth);
   return (
     <AuthProvider>
       <Container>
@@ -50,6 +59,7 @@ console.log('auth', auth)
           {...pageProps}
           tasks={data && data.todos ? data.todos : []}
           people={users && users.users ? users.users : []}
+          mutateData={mutateData}
         />
         <Toaster />
       </Container>
