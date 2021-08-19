@@ -21,10 +21,10 @@ export default function MyApp({ Component, pageProps }: AppProps): any {
 
   const mutateData = (type: string) => {
     if (type === 'todos') {
-      mutateTodos(`/api/todos`, false);
+      mutateTodos(`/api/todos`, true);
     }
     if (type === 'users') {
-      mutateUsers(`/api/users`, false);
+      mutateUsers(`/api/users`, true);
     }
   };
 

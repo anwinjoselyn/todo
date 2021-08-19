@@ -2,16 +2,20 @@
 import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
-import { mutate } from 'swr';
+import useSWR from 'swr';
 
 import { CustomButton, SelectPanel, Textarea, Modal } from '../components';
 
 import { createTodo, updateTodo, deleteTodo } from '../libs/todos';
+import fetcher from '../libs/fetcher';
+
 import { getRandomIntInclusive } from '../utils/helpers';
 
 const todayDate = dayjs().format('YYYY-MM-DD');
 
-const Notes = ({ tasks, mutateData }: any) => {
+const Notes = () => {
+  const { data: notes, mutate } = useSWR(`/api/notes`, fetcher);
+
   const [state, setState] = useState<any>({
     selectionList: [
       { key: 5, label: 'All', value: 'all', selected: true },
@@ -20,8 +24,8 @@ const Notes = ({ tasks, mutateData }: any) => {
       { key: 3, label: 'This Month', value: 'month', selected: false },
       { key: 4, label: 'Future', value: 'future', selected: false },
     ],
-    filteredNotes: tasks.filter((t: any) => !t.isCompleted),
-    openNotes: tasks.filter((t: any) => !t.isCompleted),
+    filteredNotes: notes ? notes.todos : [],
+    openNotes: notes ? notes.todos : [],
     selectedIndex: 0,
     editingNote: {},
     editingId: '',
@@ -29,13 +33,17 @@ const Notes = ({ tasks, mutateData }: any) => {
     status: '',
     showConfirmation: false,
   });
-
+  console.log('notes', notes);
   useEffect(() => {
-    state.colors = state.filteredNotes.map((_note: any) => {
-      return getRandomIntInclusive(1, 13);
-    });
-    setState({ ...state });
-  }, []);
+    if (notes && notes.todos) {
+      state.filteredNotes = notes.todos;
+      state.filteredNotes = notes.todos;
+      state.colors = notes.todos.map((_note: any) => {
+        return getRandomIntInclusive(1, 13);
+      });
+      setState({ ...state });
+    }
+  }, [notes]);
 
   const setEditingNote = (todo: any) => {
     state.editingNote = todo;
@@ -125,7 +133,7 @@ const Notes = ({ tasks, mutateData }: any) => {
       console.log('resp', resp);
       if (resp.success) {
         toast.success(message);
-        mutateData('todos');
+        mutate('/api/notes');
         // setTimeout(() => {
         //   // router.push('/notes');
         //   // window.location.reload();

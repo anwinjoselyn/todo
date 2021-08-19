@@ -23,6 +23,20 @@ export async function getUserTodos(userId: any) {
   return todos;
 }
 
+export async function getTodosByType(type: string) {
+  const snapshot = await db
+    .collection('todos')
+    .where('type', '==', type)
+    .where('isCompleted', '==', false)
+    .get();
+  const todos = [];
+  snapshot.forEach((doc) => {
+    todos.push({ id: doc.id, ...doc.data() });
+  });
+
+  return todos;
+}
+
 export async function getAllTodos() {
   const snapshot = await db.collection('todos').get();
   const todos = [];
