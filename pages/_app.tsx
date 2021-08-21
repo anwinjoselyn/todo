@@ -42,19 +42,19 @@ export default function MyApp({ Component, pageProps }: AppProps): any {
   console.log('auth', auth);
   return (
     <AuthProvider>
-    <Head>
-      <title>To Do App with Next.js, Firebase {`&`} Tailwind CSS</title>
-      <meta
-        name="title"
-        property="og:title"
-        content={`To Do App with Next.js, Firebase & Tailwind CSS`}
-        key="title"
-      />
-      <link
-        href="https://fonts.googleapis.com/icon?family=Material+Icons"
-        rel="stylesheet"
-      ></link>
-    </Head>
+      <Head>
+        <title>To Do App with Next.js, Firebase {`&`} Tailwind CSS</title>
+        <meta
+          name="title"
+          property="og:title"
+          content="To Do App with Next.js, Firebase & Tailwind CSS"
+          key="title"
+        />
+        <link
+          href="https://fonts.googleapis.com/icon?family=Material+Icons"
+          rel="stylesheet"
+        ></link>
+      </Head>
       <Container>
         <Component
           {...pageProps}
