@@ -1,7 +1,9 @@
 
 @import 'tailwindcss/base';
+/* purgecss start ignore */
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
+/* purgecss end ignore */
 
 :root {
   --blue-light: #b5dfff;
