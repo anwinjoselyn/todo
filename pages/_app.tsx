@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import '../styles/style.css';
 
 import { AppProps } from 'next/app';
@@ -15,6 +16,14 @@ import { AuthProvider } from '../hooks/useAuth';
 export default function MyApp({ Component, pageProps }: AppProps): any {
   const auth = useRequireAuth();
 
+  if (!auth.user) {
+    return (
+      <Container>
+        <LoginForm />
+      </Container>
+    );
+  }
+
   const { data, mutate: mutateTodos } = useSWR(`/api/todos`, fetcher);
   const { data: users, mutate: mutateUsers } = useSWR(`/api/users`, fetcher);
 
@@ -26,15 +35,7 @@ export default function MyApp({ Component, pageProps }: AppProps): any {
       mutateUsers(`/api/users`, true);
     }
   };
-
-  if (!auth.user) {
-    return (
-      <Container>
-        <LoginForm />
-      </Container>
-    );
-  }
-
+  
   if (!data || data.error) {
     return <Container>Loading...</Container>;
   }

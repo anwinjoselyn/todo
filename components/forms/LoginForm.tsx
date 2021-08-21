@@ -5,7 +5,7 @@ import Link from 'next/link';
 
 import { useAuth } from '../../hooks/useAuth';
 
-import Button from '../elements/Button';
+import { CustomButton } from '../';
 
 interface LoginData {
   email: string;
@@ -85,7 +85,7 @@ const LoginForm: React.FC = () => {
           <Link href="/reset-password">
             <a
               href="#"
-              className="font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus:underline transition ease-in-out duration-150"
+              className="font-medium text-blue focus:outline-none focus:underline transition ease-in-out duration-150"
             >
               Forgot your password?
             </a>
@@ -94,7 +94,7 @@ const LoginForm: React.FC = () => {
       </div>
       <div className="mt-4">
         <span className="block w-full rounded-md shadow-sm">
-          <button
+          {/* <button
             type="button"
             onClick={() => {
               [
@@ -114,13 +114,18 @@ const LoginForm: React.FC = () => {
             }}
           >
             Trigger Name Errors
-          </button>
-          <Button
+          </button> */}
+          <CustomButton
+            size="large"
+            style="info"
+            label="Submit"
+          />
+          {/* <Button
             title="Login"
             type="submit"
             isLoading={isLoading}
             className="w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition duration-150 ease-in-out"
-          />
+          /> */}
           {/* <button
             type="submit"
             className="w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition duration-150 ease-in-out"
