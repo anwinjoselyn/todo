@@ -1,3 +1,8 @@
+
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
 :root {
   --blue-light: #b5dfff;
   --blue-DEFAULT: #4aa7ed;
@@ -22,10 +27,6 @@
   --gray-light: #e0e6ed;
   --gray-lightest: #f9fafc;
 }
-
-@import 'tailwindcss/base';
-@import 'tailwindcss/components';
-@import 'tailwindcss/utilities';
 
 /* @tailwind base;
 @tailwind components;
