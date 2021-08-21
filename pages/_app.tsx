@@ -46,6 +46,7 @@ export default function MyApp({ Component, pageProps }: AppProps): any {
         <Head>
           <title>To Do App with Next.js, Firebase {`&`} Tailwind CSS</title>
           <meta
+            name="title"
             property="og:title"
             content={`To Do App with Next.js, Firebase & Tailwind CSS`}
             key="title"
