@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useRouter } from 'next/dist/client/router';
+import { useRouter } from 'next/router';
 import { useForm } from 'react-hook-form';
 import Link from 'next/link';
 
@@ -119,6 +119,7 @@ const LoginForm: React.FC = () => {
             size="large"
             style="info"
             label="Submit"
+            type="submit"
           />
           {/* <Button
             title="Login"

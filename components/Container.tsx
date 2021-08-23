@@ -1,5 +1,5 @@
-
 import Head from 'next/head';
+import { Toaster } from 'react-hot-toast';
 
 import Header from './Header';
 import Sidebar from './Sidebar';
@@ -27,6 +27,7 @@ export default function Container({ children }: { children: React.ReactNode }) {
         <Header />
         <div className="p-3">{children}</div>
       </div>
+      <Toaster />
     </div>
   );
 }

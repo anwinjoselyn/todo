@@ -8,6 +8,9 @@ import { todoFormData, todoTypes } from '../utils/defaultValues';
 const todayDate = dayjs().format('YYYY-MM-DD');
 
 const Tasks = ({ tasks, people, user }: any) => {
+  // console.log('tasks', tasks);
+  // console.log('people', people);
+  // console.log('user', user);
   const [state, setState] = useState<any>({
     selectionList: [
       { key: 5, label: 'All', value: 'all', selected: true },

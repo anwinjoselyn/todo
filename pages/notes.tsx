@@ -13,7 +13,9 @@ import { getRandomIntInclusive } from '../utils/helpers';
 
 const todayDate = dayjs().format('YYYY-MM-DD');
 
-const Notes = () => {
+const Notes = ({ user, people }) => {
+  // console.log('user', user);
+  // console.log('users', people);
   const { data: notes, mutate } = useSWR(`/api/notes`, fetcher);
 
   const [state, setState] = useState<any>({

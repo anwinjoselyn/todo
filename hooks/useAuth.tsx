@@ -7,7 +7,7 @@ import {
   ReactNode,
 } from 'react';
 import { auth, db } from '../config/firebase';
-const authContext = createContext({ user: {} });
+const authContext = createContext({ user: null });
 const { Provider } = authContext;
 // Provider hook that creates an auth object and handles it's state
 const useAuthProvider = () => {

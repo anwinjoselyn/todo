@@ -12,17 +12,19 @@ import Container from '../components/Container';
 import LoginForm from '../components/forms/LoginForm';
 
 import { AuthProvider } from '../hooks/useAuth';
+import { useEffect } from 'react';
+import router from 'next/router';
 
 export default function MyApp({ Component, pageProps }: AppProps): any {
   const auth = useRequireAuth();
 
-  if (!auth.user) {
-    return (
-      <Container>
-        <LoginForm />
-      </Container>
-    );
-  }
+  console.log('auth', auth);
+
+  useEffect(() => {
+    if (!auth.user) {
+      router.push('/login');
+    }
+  }, [auth]);
 
   const { data, mutate: mutateTodos } = useSWR(`/api/todos`, fetcher);
   const { data: users, mutate: mutateUsers } = useSWR(`/api/users`, fetcher);
@@ -35,7 +37,7 @@ export default function MyApp({ Component, pageProps }: AppProps): any {
       mutateUsers(`/api/users`, true);
     }
   };
-  
+
   if (!data || data.error) {
     return <Container>Loading...</Container>;
   }

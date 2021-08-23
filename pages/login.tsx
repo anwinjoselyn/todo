@@ -1,6 +1,24 @@
 import Link from 'next/link';
+import toast from 'react-hot-toast';
+
+import useRequireAuth from '../hooks/useRequireAuth';
+
 import LoginForm from '../components/forms/LoginForm';
-const LoginPage: React.FC = () => {
+import router from 'next/router';
+
+const LoginPage = () => {
+  const auth = useRequireAuth();
+
+  if (auth.user) {
+    if (auth.user.name) {
+      toast.success(`You are already logged in as ${auth.user.name}`);
+      toast.success('Redirecting to Homepage...');
+      setTimeout(() => {
+        router.push('/');
+      }, 5000);
+    }
+  }
+
   return (
     <div className="min-h-screen flex flex-col justify-center bg-gray-200">
       <div className="mt-2 sm:mx-auto sm:w-full sm:max-w-md">
@@ -24,4 +42,5 @@ const LoginPage: React.FC = () => {
     </div>
   );
 };
+
 export default LoginPage;

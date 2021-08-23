@@ -1,8 +1,10 @@
 import useRequireAuth from '../hooks/useRequireAuth';
 
+import { CustomButton } from '../components';
+
 const DashBoardPage: React.FC = () => {
   const auth = useRequireAuth();
-  console.log('auth', auth);
+
   if (!auth.user) return null;
   return (
     <div className="min-h-screen flex bg-gray-200">
@@ -14,12 +16,13 @@ const DashBoardPage: React.FC = () => {
           <p className="mt-2 text-center text-md text-gray-600">
             {`You are logged in with ${auth.user.email}`}
           </p>
-          <button
+          <CustomButton onClick={() => auth.signOut()} size="large" label="Sign Out" style="info" />
+          {/* <button
             onClick={() => auth.signOut()}
             className="w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition duration-150 ease-in-out"
           >
             Sign out
-          </button>
+          </button> */}
         </div>
       </div>
     </div>
