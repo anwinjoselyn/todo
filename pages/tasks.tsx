@@ -1,16 +1,30 @@
 import { useEffect, useState } from 'react';
 import dayjs from 'dayjs';
+import useSWR from 'swr';
 
 import { CustomButton, SelectPanel, Drawer, Modal } from '../components';
 import AddNew from '../components/AddNew';
 import { todoFormData, todoTypes } from '../utils/defaultValues';
+import fetcher from '../libs/fetcher';
+import useRequireAuth from '../hooks/useRequireAuth';
 
 const todayDate = dayjs().format('YYYY-MM-DD');
 
-const Tasks = ({ tasks, people, user }: any) => {
-  // console.log('tasks', tasks);
-  // console.log('people', people);
-  // console.log('user', user);
+const Tasks = () => {
+  const auth = useRequireAuth();
+  const { data: tasks, mutate: mutateTodos } = useSWR(`/api/todos`, fetcher);
+  const { data: people, mutate: mutateUsers } = useSWR(`/api/users`, fetcher);
+  const { data: user, mutate: mutateUser } = useSWR(
+    auth.user?.uid ? `/api/users?id=${auth.user?.uid}` : null,
+    fetcher
+  );
+
+  // if (!data || data.error) {
+  //   return <Container>Loading...</Container>;
+  // }
+  console.log('tasks', tasks);
+  console.log('people', people);
+  console.log('user', user);
   const [state, setState] = useState<any>({
     selectionList: [
       { key: 5, label: 'All', value: 'all', selected: true },
@@ -25,15 +39,15 @@ const Tasks = ({ tasks, people, user }: any) => {
     showModal: false,
     editingTodo: {},
     editingId: '',
-    filteredTasks: tasks.filter((t: any) => !t.isCompleted),
+    filteredTasks: tasks && tasks.todos?.filter((t: any) => !t.isCompleted),
     allTasks: tasks,
-    allOpenTasks: tasks.filter((t: any) => !t.isCompleted),
+    allOpenTasks: tasks && tasks.todos?.filter((t: any) => !t.isCompleted),
   });
 
   useEffect(() => {
-    if (people) {
+    if (people && people.users) {
       if (Object.keys(todoFormData).indexOf('assignedTo') > -1) {
-        todoFormData['assignedTo'].options = people.map((person: any) => {
+        todoFormData['assignedTo'].options = people.users.map((person: any) => {
           return { key: person.uid, value: person.name };
         });
       }

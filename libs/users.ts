@@ -9,3 +9,16 @@ export async function getAllUsers() {
 
   return users;
 }
+
+export async function getUser(id: string) {
+  const snapshot = await db
+    .collection('users')
+    .where('uid', '==', id)
+    .get();
+  const user = [];
+  snapshot.forEach((doc) => {
+    user.push({ id: doc.id, ...doc.data() });
+  });
+
+  return user;
+}

@@ -8,6 +8,7 @@ import Radio from './formItems/Radio';
 import Select from './formItems/Select';
 import Textarea from './formItems/Textarea';
 import Modal from './custom/Modal';
+import Loading from './custom/Loading';
 
 export {
   Button,
@@ -20,4 +21,5 @@ export {
   Select,
   Textarea,
   Modal,
+  Loading,
 };

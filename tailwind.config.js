@@ -2,7 +2,12 @@ module.exports = {
   purge: ['./pages/**/*.tsx', './components/**/*.tsx'],
   darkMode: false, // or 'media' or 'class'
   theme: {
-    extend: {},
+    extend: {
+      animation: {
+        bounce200: 'bounce 1s infinite 200ms',
+        bounce400: 'bounce 1s infinite 400ms',
+      },
+    },
     colors: {
       transparent: 'transparent',
       current: 'currentColor',

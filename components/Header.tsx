@@ -19,12 +19,15 @@ export default function Header() {
         </Link> */}
         {auth.user ? (
           <>
-          <span className="mr-3 text-bg-other">{auth.user.name}{`'`}s Workspace</span>
-          <Link href="/profile" passHref>
-            <span className="material-icons text-bg-light hover:text-secondary-text-color mr-7 self-center cursor-pointer">
-              account_circle
+            <span className="mr-3 text-bg-other">
+              {auth.user.name}
+              {`'`}s Workspace
             </span>
-          </Link>
+            <Link href="/profile" passHref>
+              <span className="material-icons text-bg-light hover:text-secondary-text-color mr-7 self-center cursor-pointer">
+                account_circle
+              </span>
+            </Link>
           </>
         ) : null}
       </div>
