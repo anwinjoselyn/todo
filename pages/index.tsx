@@ -1,6 +1,15 @@
+
+import router from 'next/router';
 import { todoTypes } from '../utils/defaultValues';
 
+import useRequireAuth from '../hooks/useRequireAuth';
+
 export default function Home({tasks}: any) {
+  const auth = useRequireAuth();
+
+  if (!auth.user) {
+    router.push('login');
+  }
 
   const summary = (type: any) => {
     let summaryObj: any = {

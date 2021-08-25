@@ -9,15 +9,17 @@ import Container from '../components/Container';
 
 import { AuthProvider } from '../hooks/useAuth';
 
-export default function MyApp({ Component, pageProps }: AppProps): any {
+function MyApp({ Component, pageProps }: AppProps): any {
+  const auth = useRequireAuth();
+  console.log('auth', auth);
 
-  return (
-    <AuthProvider>
-      <Container>
-        <Component
-          {...pageProps}
-        />
-      </Container>
-    </AuthProvider>
-  );
+    return (
+      <AuthProvider>
+        <Container>
+          <Component {...pageProps} appAuth={auth} />
+        </Container>
+      </AuthProvider>
+    );
 }
+
+export default MyApp;

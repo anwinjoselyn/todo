@@ -31,7 +31,7 @@ export default function Container({ children }: { children: React.ReactNode }) {
       </div>
       <div className="w-5/6 ...">
         <Header />
-        <div className="p-3">{auth.user === null ? <Loading /> : children}</div>
+        <div className="p-3">{children}</div>
       </div>
       <Toaster />
     </div>

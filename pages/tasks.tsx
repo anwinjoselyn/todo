@@ -7,11 +7,17 @@ import AddNew from '../components/AddNew';
 import { todoFormData, todoTypes } from '../utils/defaultValues';
 import fetcher from '../libs/fetcher';
 import useRequireAuth from '../hooks/useRequireAuth';
+import router from 'next/router';
 
 const todayDate = dayjs().format('YYYY-MM-DD');
 
-const Tasks = () => {
+const Tasks = ({ appAuth }) => {
+  console.log('appAuth', appAuth);
   const auth = useRequireAuth();
+
+  if (!auth.user) {
+    router.push('login');
+  }
   const { data: tasks, mutate: mutateTodos } = useSWR(`/api/todos`, fetcher);
   const { data: people, mutate: mutateUsers } = useSWR(`/api/users`, fetcher);
   const { data: user, mutate: mutateUser } = useSWR(
@@ -25,6 +31,7 @@ const Tasks = () => {
   console.log('tasks', tasks);
   console.log('people', people);
   console.log('user', user);
+  console.log('auth', auth);
   const [state, setState] = useState<any>({
     selectionList: [
       { key: 5, label: 'All', value: 'all', selected: true },
