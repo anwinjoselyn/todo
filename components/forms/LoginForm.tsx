@@ -13,14 +13,12 @@ interface LoginData {
   password: string;
 }
 const LoginForm: React.FC = () => {
-  const [isLoading, setIsLoading] = useState(false);
   const [error, setErrors] = useState(null);
   const router = useRouter();
 
   const {
     register,
     handleSubmit,
-    setError,
     formState: { errors },
   } = useForm();
 
@@ -31,16 +29,13 @@ const LoginForm: React.FC = () => {
       toast.success('Redirecting to Homepage...');
       setTimeout(() => {
         router.push('/');
-      }, 5000);
+      }, 2000);
     }
   }
 
   const onSubmit = (data: LoginData) => {
-    setIsLoading(true);
-    setErrors(null);
-    return auth.signIn(data).then((response) => {
-      setIsLoading(false);
-      response.error ? setErrors(response.error) : router.push('/dashboard');
+    return auth.signIn(data).then((response: any) => {
+      response.error ? setErrors(response.error) : router.push('/');
     });
   };
 
@@ -120,45 +115,12 @@ const LoginForm: React.FC = () => {
             </div>
             <div className="mt-4">
               <span className="block w-full rounded-md shadow-sm">
-                {/* <button
-            type="button"
-            onClick={() => {
-              [
-                {
-                  type: 'manual',
-                  name: 'email',
-                  message: 'Triple Check This',
-                },
-                {
-                  type: 'manual',
-                  name: 'password',
-                  message: 'Triple Check This',
-                },
-              ].forEach(({ name, type, message }) =>
-                setError(name, { type, message })
-              );
-            }}
-          >
-            Trigger Name Errors
-          </button> */}
                 <CustomButton
                   size="large"
                   style="info"
                   label="Submit"
                   type="submit"
                 />
-                {/* <Button
-            title="Login"
-            type="submit"
-            isLoading={isLoading}
-            className="w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition duration-150 ease-in-out"
-          /> */}
-                {/* <button
-            type="submit"
-            className="w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition duration-150 ease-in-out"
-          >
-            Log in
-          </button> */}
               </span>
               {error?.message && (
                 <div className="mb-4 text-red-500 text-center border-dashed border border-red-600 p-2 rounded">
