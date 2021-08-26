@@ -13,7 +13,7 @@ const ResetPasswordForm: React.FC = () => {
   const router = useRouter();
   const onSubmit = (data: { email: string }) => {
     auth.sendPasswordResetEmail(data.email);
-    router.push('/login');
+    // router.push('/login');
   };
   return (
     <form onSubmit={handleSubmit(onSubmit)}>

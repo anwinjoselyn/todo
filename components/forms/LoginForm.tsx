@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
-import { useForm } from 'react-hook-form';
 import Link from 'next/link';
+import { useForm } from 'react-hook-form';
+import toast from 'react-hot-toast';
 
 import { useAuth } from '../../hooks/useAuth';
 
@@ -14,6 +15,7 @@ interface LoginData {
 const LoginForm: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setErrors] = useState(null);
+  const router = useRouter();
 
   const {
     register,
@@ -23,7 +25,15 @@ const LoginForm: React.FC = () => {
   } = useForm();
 
   const auth = useAuth();
-  const router = useRouter();
+  if (auth.user) {
+    if (auth.user.name) {
+      toast.success(`You are already logged in as ${auth.user.name}`);
+      toast.success('Redirecting to Homepage...');
+      setTimeout(() => {
+        router.push('/');
+      }, 5000);
+    }
+  }
 
   const onSubmit = (data: LoginData) => {
     setIsLoading(true);
@@ -35,66 +45,82 @@ const LoginForm: React.FC = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <div className="rounded-md">
-        <label
-          htmlFor="email"
-          className="block text-sm font-medium leading-5 text-gray-700"
-        >
-          Email address
-        </label>
-        <div className="mt-1 rounded-md">
-          <input
-            id="email"
-            className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5 shadow-sm"
-            type="email"
-            name="email"
-            {...register('email')}
-          />
-          {errors.email && (
-            <div className="mt-2 text-xs text-red-600">
-              {errors.email.message}
+    <div className="min-h-screen flex flex-col justify-center bg-gray-200">
+      <div className="mt-2 sm:mx-auto sm:w-full sm:max-w-md">
+        <div className="text-center mt-24">
+          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+            Log in
+          </h2>
+          <p className="mt-2 text-center text-md text-gray-600">
+            {"Don't have an account? "}
+            <Link href="/signup">
+              <a href="#" className="text-blue">
+                Sign Up
+              </a>
+            </Link>
+          </p>
+        </div>
+        <div className="mt-2 bg-white px-4 shadow sm:rounded-lg sm:px-10">
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <div className="rounded-md">
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium leading-5 text-gray-700"
+              >
+                Email address
+              </label>
+              <div className="mt-1 rounded-md">
+                <input
+                  id="email"
+                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5 shadow-sm"
+                  type="email"
+                  name="email"
+                  {...register('email')}
+                />
+                {errors.email && (
+                  <div className="mt-2 text-xs text-red-600">
+                    {errors.email.message}
+                  </div>
+                )}
+              </div>
             </div>
-          )}
-        </div>
-      </div>
-      <div className="mt-4">
-        <label
-          htmlFor="password"
-          className="block text-sm font-medium leading-5 text-gray-700"
-        >
-          Password
-        </label>
-        <div className="mt-1 rounded-md">
-          <input
-            id="password"
-            className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5 shadow-sm"
-            type="password"
-            name="password"
-            {...register('password')}
-          />
-          {errors.password && (
-            <div className="mt-2 text-xs text-red-600">
-              {errors.password.message}
+            <div className="mt-4">
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium leading-5 text-gray-700"
+              >
+                Password
+              </label>
+              <div className="mt-1 rounded-md">
+                <input
+                  id="password"
+                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5 shadow-sm"
+                  type="password"
+                  name="password"
+                  {...register('password')}
+                />
+                {errors.password && (
+                  <div className="mt-2 text-xs text-red-600">
+                    {errors.password.message}
+                  </div>
+                )}
+              </div>
             </div>
-          )}
-        </div>
-      </div>
-      <div className="mt-4 flex items-end">
-        <div className="text-sm leading-5">
-          <Link href="/reset-password">
-            <a
-              href="#"
-              className="font-medium text-blue focus:outline-none focus:underline transition ease-in-out duration-150"
-            >
-              Forgot your password?
-            </a>
-          </Link>
-        </div>
-      </div>
-      <div className="mt-4">
-        <span className="block w-full rounded-md shadow-sm">
-          {/* <button
+            <div className="mt-4 flex items-end">
+              <div className="text-sm leading-5">
+                <Link href="/reset-password">
+                  <a
+                    href="#"
+                    className="font-medium text-blue focus:outline-none focus:underline transition ease-in-out duration-150"
+                  >
+                    Forgot your password?
+                  </a>
+                </Link>
+              </div>
+            </div>
+            <div className="mt-4">
+              <span className="block w-full rounded-md shadow-sm">
+                {/* <button
             type="button"
             onClick={() => {
               [
@@ -115,32 +141,35 @@ const LoginForm: React.FC = () => {
           >
             Trigger Name Errors
           </button> */}
-          <CustomButton
-            size="large"
-            style="info"
-            label="Submit"
-            type="submit"
-          />
-          {/* <Button
+                <CustomButton
+                  size="large"
+                  style="info"
+                  label="Submit"
+                  type="submit"
+                />
+                {/* <Button
             title="Login"
             type="submit"
             isLoading={isLoading}
             className="w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition duration-150 ease-in-out"
           /> */}
-          {/* <button
+                {/* <button
             type="submit"
             className="w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition duration-150 ease-in-out"
           >
             Log in
           </button> */}
-        </span>
-        {error?.message && (
-          <div className="mb-4 text-red-500 text-center border-dashed border border-red-600 p-2 rounded">
-            <span>{error.message}</span>
-          </div>
-        )}
+              </span>
+              {error?.message && (
+                <div className="mb-4 text-red-500 text-center border-dashed border border-red-600 p-2 rounded">
+                  <span>{error.message}</span>
+                </div>
+              )}
+            </div>
+          </form>
+        </div>
       </div>
-    </form>
+    </div>
   );
 };
 export default LoginForm;

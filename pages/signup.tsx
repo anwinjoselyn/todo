@@ -9,14 +9,14 @@ const SignUpPage: React.FC = () => {
           <h2 className="text-center text-3xl leading-9 font-extrabold text-gray-900">
             Sign up
           </h2>
-          <p className="mt-2 text-center text-md text-gray-600">
+          {/* <p className="mt-2 text-center text-md text-gray-600">
             Already have an account?{' '}
             <Link href="/login">
               <a href="#" className="text-blue">
                 Log in
               </a>
             </Link>
-          </p>
+          </p> */}
         </div>
         <div className="bg-white py-2 px-4 shadow sm:rounded-lg sm:px-10">
           <SignUpForm />

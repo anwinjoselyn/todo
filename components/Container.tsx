@@ -3,13 +3,14 @@ import { Toaster } from 'react-hot-toast';
 
 import Header from './Header';
 import Sidebar from './Sidebar';
-import { Loading } from './';
+// import { Loading } from './';
+import LoginForm from './forms/LoginForm';
 
 import useRequireAuth from '../hooks/useRequireAuth';
 
 export default function Container({ children }: { children: React.ReactNode }) {
   const auth = useRequireAuth();
-  // console.log('auth', auth);
+  console.log('auth', auth);
 
   return (
     <div className="flex bg-bg-light">
@@ -31,7 +32,7 @@ export default function Container({ children }: { children: React.ReactNode }) {
       </div>
       <div className="w-5/6 ...">
         <Header />
-        <div className="p-3">{children}</div>
+        <div className="p-3">{!auth.user ? <LoginForm /> : children}</div>
       </div>
       <Toaster />
     </div>

@@ -94,10 +94,18 @@ export const todoTypes: any = [
 
 export const sidebarValues: any = [
   {
+    key: 7,
+    title: 'Home',
+    description: 'Home',
+    route: '/',
+    icon: 'home',
+    children: [],
+  },
+  {
     key: 6,
     title: 'Overview',
     description: 'All To Dos',
-    route: '/',
+    route: '/overview',
     icon: 'preview',
     children: [],
   },

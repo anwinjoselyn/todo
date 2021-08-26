@@ -57,7 +57,8 @@ export default function Sidebar() {
       router.replace(route);
     }
   };
-
+  console.log('state', state);
+  console.log('searchTerms', searchTerms);
   return (
     <div className="bg-primary-text-color h-screen sticky top-0">
       <div className="py-3 border-b border-secondary-text-color h-14 px-4 text-lg text-center text-orange">

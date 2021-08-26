@@ -1,72 +1,31 @@
-
-import router from 'next/router';
-import { todoTypes } from '../utils/defaultValues';
-
 import useRequireAuth from '../hooks/useRequireAuth';
 
-export default function Home({tasks}: any) {
+import { CustomButton } from '../components';
+
+const DashBoardPage: React.FC = () => {
   const auth = useRequireAuth();
 
-  if (!auth.user) {
-    router.push('login');
-  }
-
-  const summary = (type: any) => {
-    let summaryObj: any = {
-      total: 0,
-      completed: 0,
-    };
-    const todosOfSameType: any = tasks.filter(
-      (todo: any) => todo.type.toLowerCase() === type.title.toLowerCase()
-    );
-
-    if (todosOfSameType.length > 0) {
-      todosOfSameType.forEach((td: any) => {
-        summaryObj.total += 1;
-        summaryObj.completed = td.isCompleted
-          ? summaryObj.completed + 1
-          : summaryObj.completed;
-      });
-    }
-    return summaryObj;
-  };
-
-  const renderTypes = () => {
-    return (
-      <div className="flex flex-wrap justify-center">
-        {todoTypes.map((type: any) => {
-          const summ: any = summary(type);
-          return (
-            <div
-              key={type.id}
-              className="w-1/4 h-40 border border-border-color m-2 rounded-lg hover:shadow-md"
-            >
-              <h2 className="text-center py-2 text-2xl bg-bg-other text-bg-light rounded-t-lg">{type.title}</h2>
-              <div className="py-2">{type.description}</div>
-              <div className="text-center py-3 flex place-content-between px-3">
-              <span>Open: {summ.total - summ.completed}</span>
-              <span>Total: {summ.total}</span>
-              </div>
-            </div>
-          );
-        })}
-      </div>
-    );
-  };
-
+  if (!auth.user) return null;
   return (
-    <div className="p-6">
-      <h1 className="text-center my-7 text-3xl">Overview of Task Types</h1>
-      {tasks && renderTypes()}
-      {/* {todos &&
-        !data.error &&
-        todos.map((todo: any) => (
-          <ToDo
-            key={todo.id}
-            {...todo}
-            users={users && users.users ? users.users : []}
-          />
-        ))} */}
+    <div className="min-h-screen flex bg-gray-200">
+      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+        <div className="text-center mt-6 flex flex-col">
+          <h2 className="text-3xl font-extrabold text-gray-900 w-full">
+            {`Welcome ${auth.user.name}!`}
+          </h2>
+          <p className="my-3 text-center text-md text-gray-600">
+            {`You are logged in with ${auth.user.email}`}
+          </p>
+          <CustomButton onClick={() => auth.signOut()} size="large" label="Sign Out" style="info" />
+          {/* <button
+            onClick={() => auth.signOut()}
+            className="w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition duration-150 ease-in-out"
+          >
+            Sign out
+          </button> */}
+        </div>
+      </div>
     </div>
   );
-}
+};
+export default DashBoardPage;

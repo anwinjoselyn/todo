@@ -7,7 +7,6 @@ import AddNew from '../components/AddNew';
 import { todoFormData, todoTypes } from '../utils/defaultValues';
 import fetcher from '../libs/fetcher';
 import useRequireAuth from '../hooks/useRequireAuth';
-import router from 'next/router';
 
 const todayDate = dayjs().format('YYYY-MM-DD');
 
@@ -15,9 +14,6 @@ const Tasks = ({ appAuth }) => {
   console.log('appAuth', appAuth);
   const auth = useRequireAuth();
 
-  if (!auth.user) {
-    router.push('login');
-  }
   const { data: tasks, mutate: mutateTodos } = useSWR(`/api/todos`, fetcher);
   const { data: people, mutate: mutateUsers } = useSWR(`/api/users`, fetcher);
   const { data: user, mutate: mutateUser } = useSWR(
@@ -59,8 +55,17 @@ const Tasks = ({ appAuth }) => {
         });
       }
     }
-  });
+  }, [people]);
 
+  useEffect(() => {
+    if (tasks && tasks.todos) {
+      state.filteredTasks = tasks.todos.filter((t: any) => !t.isCompleted);
+      state.allOpenTasks = tasks.todos.filter((t: any) => !t.isCompleted);
+      state.allTasks = tasks.todos;
+      setState({ ...state });
+    }
+  }, [tasks]);
+  
   const setEditingTodo = (todo: any) => {
     let editingTodo = {};
     Object.keys(JSON.parse(JSON.stringify(todoFormData))).forEach(
