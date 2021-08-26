@@ -1,33 +1,26 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from 'react';
 import dayjs from 'dayjs';
-import useSWR from 'swr';
 
-import { CustomButton, SelectPanel, Drawer, Modal } from '../components';
+import {
+  CustomButton,
+  SelectPanel,
+  Drawer,
+  Modal,
+  Loading,
+} from '../components';
 import AddNew from '../components/AddNew';
+
+import { getAllTodos } from '../libs/todos';
+import { getAllUsers, getUser } from '../libs/users';
 import { todoFormData, todoTypes } from '../utils/defaultValues';
-import fetcher from '../libs/fetcher';
 import useRequireAuth from '../hooks/useRequireAuth';
 
 const todayDate = dayjs().format('YYYY-MM-DD');
 
-const Tasks = ({ appAuth }) => {
-  console.log('appAuth', appAuth);
+const Tasks = () => {
   const auth = useRequireAuth();
 
-  const { data: tasks, mutate: mutateTodos } = useSWR(`/api/todos`, fetcher);
-  const { data: people, mutate: mutateUsers } = useSWR(`/api/users`, fetcher);
-  const { data: user, mutate: mutateUser } = useSWR(
-    auth.user?.uid ? `/api/users?id=${auth.user?.uid}` : null,
-    fetcher
-  );
-
-  // if (!data || data.error) {
-  //   return <Container>Loading...</Container>;
-  // }
-  console.log('tasks', tasks);
-  console.log('people', people);
-  console.log('user', user);
-  console.log('auth', auth);
   const [state, setState] = useState<any>({
     selectionList: [
       { key: 5, label: 'All', value: 'all', selected: true },
@@ -42,30 +35,38 @@ const Tasks = ({ appAuth }) => {
     showModal: false,
     editingTodo: {},
     editingId: '',
-    filteredTasks: tasks && tasks.todos?.filter((t: any) => !t.isCompleted),
-    allTasks: tasks,
-    allOpenTasks: tasks && tasks.todos?.filter((t: any) => !t.isCompleted),
+    filteredTasks: [],
+    allTasks: [],
+    allOpenTasks: [],
+    isLoading: true,
+    users: {},
   });
 
   useEffect(() => {
-    if (people && people.users) {
-      if (Object.keys(todoFormData).indexOf('assignedTo') > -1) {
-        todoFormData['assignedTo'].options = people.users.map((person: any) => {
-          return { key: person.uid, value: person.name };
-        });
+    Promise.all([getAllTodos(), getAllUsers()]).then((res) => {
+      console.log('res', res);
+      if (res[0]) {
+        const filtered = res[0].filter((t: any) => !t.isCompleted);
+        state.filteredTasks = filtered;
+        state.allOpenTasks = filtered;
+        state.allTasks = res[0];
+        state.isLoading = false;
+        setState({ ...state });
       }
-    }
-  }, [people]);
+    });
+  }, []);
 
   useEffect(() => {
-    if (tasks && tasks.todos) {
-      state.filteredTasks = tasks.todos.filter((t: any) => !t.isCompleted);
-      state.allOpenTasks = tasks.todos.filter((t: any) => !t.isCompleted);
-      state.allTasks = tasks.todos;
-      setState({ ...state });
+    if (auth.user?.uid) {
+      getUser(auth.user?.uid).then((res) => {
+        console.log('res', res);
+        if (res && res[0]) {
+          setState({ ...state, user: res[0] });
+        }
+      });
     }
-  }, [tasks]);
-  
+  }, [auth.user?.uid]);
+
   const setEditingTodo = (todo: any) => {
     let editingTodo = {};
     Object.keys(JSON.parse(JSON.stringify(todoFormData))).forEach(
@@ -121,110 +122,121 @@ const Tasks = ({ appAuth }) => {
 
   return (
     <div className="p-5">
-      <div className="flex justify-between mb-5">
-        <SelectPanel list={state.selectionList} onSelect={onSelect} />
-        <CustomButton
-          size="large"
-          style="warning"
-          label={<span className="material-icons">add_box</span>}
-          onClick={() => setState({ ...state, show: !state.show })}
-        />
-      </div>
-      <table className="border-separate table-fixed border-collapse rounded-lg shadow-custom1 p-3">
-        <thead>
-          <tr className="rounded-lg">
-            <th className="w-1/6 text-sm py-1 text-left px-2 rounded-md bg-gray">
-              Title
-            </th>
-            <th className="w-1/12 rounded-md bg-gray text-sm py-1 text-left px-2">
-              Type
-            </th>
-            <th className="w-1/12 bg-gray rounded-md text-sm py-1 text-left px-2">
-              Owner
-            </th>
-            <th className="w-2/6 max-w-6xl bg-gray rounded-md text-sm py-1 text-left px-2">
-              Content
-            </th>
-            <th className="w-1/12 bg-gray rounded-md text-sm py-1 text-left px-2">
-              Due On
-            </th>
-            <th className="w-1/12 bg-gray rounded-md text-sm py-1 text-left px-2">
-              Updated
-            </th>
-            <th className="w-1/12 bg-gray rounded-md text-sm py-1 px-2">
-              Actions
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {state.filteredTasks &&
-            state.filteredTasks
-              .sort((a: any, b: any) => b.createdAt - a.createdAt)
-              .map((task: any) => (
-                <tr key={task.id} className="hover:bg-gray-light h-10">
-                  <td className="px-2 text-sm py-1">{task.title}</td>
-                  <td className="px-2 text-sm py-1">
-                    <div className="flex align-center">
-                      {todoTypes.find(
-                        (typ: any) =>
-                          typ.title.toLowerCase() === task.type.toLowerCase()
-                      ) && (
-                        <span className="material-icons mr-2 text-sm text-blue">
-                          {
-                            todoTypes.find(
-                              (typ: any) =>
-                                typ.title.toLowerCase() ===
-                                task.type.toLowerCase()
-                            ).icon
-                          }
-                        </span>
-                      )}
-                      {task.type.toUpperCase()}
-                    </div>
-                  </td>
-                  <td className="px-2 text-sm py-1">
-                    {task.assignedTo &&
-                    people &&
-                    people.length > 0 &&
-                    people.find((person: any) => person.uid === task.assignedTo)
-                      ? people.find(
+      {state.isLoading ? (
+        <Loading />
+      ) : (
+        <>
+          <div className="flex justify-between mb-5">
+            <SelectPanel list={state.selectionList} onSelect={onSelect} />
+            <CustomButton
+              size="large"
+              style="warning"
+              label={<span className="material-icons">add_box</span>}
+              onClick={() => setState({ ...state, show: !state.show })}
+            />
+          </div>
+          <table className="border-separate table-fixed border-collapse rounded-lg shadow-custom1 p-3">
+            <thead>
+              <tr className="rounded-lg">
+                <th className="w-1/6 text-sm py-1 text-left px-2 rounded-md bg-gray">
+                  Title
+                </th>
+                <th className="w-1/12 rounded-md bg-gray text-sm py-1 text-left px-2">
+                  Type
+                </th>
+                <th className="w-1/12 bg-gray rounded-md text-sm py-1 text-left px-2">
+                  Owner
+                </th>
+                <th className="w-2/6 max-w-6xl bg-gray rounded-md text-sm py-1 text-left px-2">
+                  Content
+                </th>
+                <th className="w-1/12 bg-gray rounded-md text-sm py-1 text-left px-2">
+                  Due On
+                </th>
+                <th className="w-1/12 bg-gray rounded-md text-sm py-1 text-left px-2">
+                  Updated
+                </th>
+                <th className="w-1/12 bg-gray rounded-md text-sm py-1 px-2">
+                  Actions
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {state.filteredTasks &&
+                state.filteredTasks
+                  .sort((a: any, b: any) => b.createdAt - a.createdAt)
+                  .map((task: any) => (
+                    <tr key={task.id} className="hover:bg-gray-light h-10">
+                      <td className="px-2 text-sm py-1">{task.title}</td>
+                      <td className="px-2 text-sm py-1">
+                        <div className="flex align-center">
+                          {todoTypes.find(
+                            (typ: any) =>
+                              typ.title.toLowerCase() ===
+                              task.type.toLowerCase()
+                          ) && (
+                            <span className="material-icons mr-2 text-sm text-blue">
+                              {
+                                todoTypes.find(
+                                  (typ: any) =>
+                                    typ.title.toLowerCase() ===
+                                    task.type.toLowerCase()
+                                ).icon
+                              }
+                            </span>
+                          )}
+                          {task.type.toUpperCase()}
+                        </div>
+                      </td>
+                      <td className="px-2 text-sm py-1">
+                        {task.assignedTo &&
+                        state.users &&
+                        state.users.length > 0 &&
+                        state.users.find(
                           (person: any) => person.uid === task.assignedTo
-                        ).name
-                      : '---'}
-                  </td>
-                  <td className="px-2 text-sm py-1">{task.body}</td>
-                  <td className="px-2 text-sm py-1">
-                    {dayjs(task.dueDate).format("DD MMM 'YY")}
-                  </td>
-                  <td className="px-2 text-sm py-1">
-                    {dayjs(task.lastUpdatedAt).isValid()
-                      ? dayjs(task.lastUpdatedAt).format("DD MMM 'YY")
-                      : '---'}
-                  </td>
-                  <td className="px-2 text-sm py-1">
-                    <div className="flex align-center justify-center">
-                      <CustomButton
-                        size="small"
-                        style="outline-info"
-                        label={
-                          <span className="material-icons small">edit</span>
-                        }
-                        className="mr-2"
-                        onClick={() => setEditingTodo(task)}
-                      />
-                      <CustomButton
-                        size="small"
-                        style="outline-danger"
-                        label={
-                          <span className="material-icons small">delete</span>
-                        }
-                      />
-                    </div>
-                  </td>
-                </tr>
-              ))}
-        </tbody>
-      </table>
+                        )
+                          ? state.users.find(
+                              (person: any) => person.uid === task.assignedTo
+                            ).name
+                          : '---'}
+                      </td>
+                      <td className="px-2 text-sm py-1">{task.body}</td>
+                      <td className="px-2 text-sm py-1">
+                        {dayjs(task.dueDate).format("DD MMM 'YY")}
+                      </td>
+                      <td className="px-2 text-sm py-1">
+                        {dayjs(task.lastUpdatedAt).isValid()
+                          ? dayjs(task.lastUpdatedAt).format("DD MMM 'YY")
+                          : '---'}
+                      </td>
+                      <td className="px-2 text-sm py-1">
+                        <div className="flex align-center justify-center">
+                          <CustomButton
+                            size="small"
+                            style="outline-info"
+                            label={
+                              <span className="material-icons small">edit</span>
+                            }
+                            className="mr-2"
+                            onClick={() => setEditingTodo(task)}
+                          />
+                          <CustomButton
+                            size="small"
+                            style="outline-danger"
+                            label={
+                              <span className="material-icons small">
+                                delete
+                              </span>
+                            }
+                          />
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+            </tbody>
+          </table>
+        </>
+      )}
       {state.show && (
         <Drawer
           show={state.show}
@@ -237,7 +249,7 @@ const Tasks = ({ appAuth }) => {
           <AddNew
             type="new"
             formData={todoFormData}
-            user={user}
+            user={state.user}
             onHide={() => setState({ ...state, show: false })}
           />
         </Drawer>
@@ -256,7 +268,7 @@ const Tasks = ({ appAuth }) => {
           <AddNew
             type="edit"
             formData={state.editingTodo}
-            user={user}
+            user={state.user}
             onHide={() =>
               setState({ ...state, showModal: false, editingTodo: {} })
             }
